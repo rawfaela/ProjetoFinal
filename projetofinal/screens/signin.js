@@ -1,8 +1,8 @@
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 
 export default function SignIn(){
-    return(
-        <View style={styles.container}>
+    return(        
+        <SafeAreaView style={styles.container}>
             <Text style={styles.title}>NOME</Text>
             <Image source={require('../assets/logofake.png')}
             style={{ width: 150, height: 150, marginVertical: 20}}/>
@@ -16,7 +16,7 @@ export default function SignIn(){
                 <TouchableOpacity style={styles.button}><Text style={styles.buttontext}>Criar conta</Text></TouchableOpacity>
                 <TouchableOpacity style={styles.button}><Text  style={styles.buttontext}>Voltar ao login</Text></TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     )
 }
 
