@@ -1,8 +1,8 @@
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function SignIn(){
-    return(        
+    return(     
         <SafeAreaView style={{flex: 1, backgroundColor: '#9ebc8a'}}>
             <View style={styles.container}>
                 <Text style={styles.title}>NOME</Text>
@@ -10,8 +10,8 @@ export default function SignIn(){
                 style={{ width: 150, height: 150, marginVertical: 20}}/>
                 <Text style={styles.title2}>CADASTRO</Text>
                 <View style={{rowGap: 20, width: '100%', alignItems:'center'}}>
-                    <TextInput placeholder='Email' style={styles.input}></TextInput>
-                    <TextInput placeholder='Senha' style={styles.input}></TextInput>
+                    <TextInput placeholder='Email' style={styles.input} keyboardType='email-address'></TextInput>
+                    <TextInput placeholder='Senha' style={styles.input} secureTextEntry={true}></TextInput>
                 </View>
                 <Text style={styles.error}>{/* {error} */}erros</Text>
                 <View style={{rowGap: 20}}>
