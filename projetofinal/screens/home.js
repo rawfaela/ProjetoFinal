@@ -1,10 +1,13 @@
-import { Text, View, StyleSheet, TextInput, Image, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, TextInput, Image, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useState } from 'react';
 
 export default function Home(){
   const [search, setSearch] = useState('');
 
   return(
+    <SafeAreaView style={{flex: 1, backgroundColor: '#edbc91'}}>
+
+
         <View style={styles.container}>
           <View style={styles.searchContainer}>
           <TextInput
@@ -14,13 +17,13 @@ export default function Home(){
           value={search}
           onChangeText={setSearch}
           />
-          <Image source={require('/assets/lupinha.png')} style={styles.icon} />
+          <Image source={require('../assets/lupinha.png')} style={styles.icon} />
         </View>
 
         <View style={styles.cardsContainer}>
           <View style={styles.background}>
             <TouchableOpacity style={styles.touchContainer}>  
-                <Image source={require('/assets/fotinho.jpg')} style={styles.img}/>
+                <Image source={require('../assets/fotinho.jpg')} style={styles.img}/>
                 <View>
                     <Text style={styles.productName}>Nome</Text>
                     <Text style={styles.price}>Preço</Text>
@@ -29,7 +32,7 @@ export default function Home(){
           </View>
           <View style={styles.background}>
             <TouchableOpacity style={styles.touchContainer}>  
-                <Image source={require('/assets/fotinho.jpg')} style={styles.img}/>
+                <Image source={require('../assets/fotinho.jpg')} style={styles.img}/>
                 <View>
                     <Text style={styles.productName}>Nome</Text>
                     <Text style={styles.price}>Preço</Text>
@@ -38,6 +41,7 @@ export default function Home(){
           </View>
         </View>
       </View>
+    </SafeAreaView>
   )
 }
 
@@ -45,15 +49,14 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#edbc91',
-      paddingTop: 50,
       paddingHorizontal: 20,
     },
     searchContainer: {
       flexDirection: 'row',
       backgroundColor: '#fff',
       borderRadius: 20,
-      height: 40,
       marginBottom: 20,
+      height: 40,
     },
     input: {
       height: 40,
