@@ -6,8 +6,6 @@ export default function Home(){
 
   return(
     <SafeAreaView style={{flex: 1, backgroundColor: '#edbc91'}}>
-
-
         <View style={styles.container}>
           <View style={styles.searchContainer}>
           <TextInput
