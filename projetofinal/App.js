@@ -97,9 +97,29 @@ export default function App() {
 import SignIn from './screens/signin';
 import LogIn from './screens/login';
 import Home from './screens/home';
+import AddProducts from './screens/addProducts';
+
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+
+function BottomTabs(){
+  const Bottom = createBottomTabNavigator();
+
+  return (
+    <Bottom.Navigator>
+
+      <Bottom.Screen name='Home' component={Home}
+      options={{
+        headerShown: false,
+      }}
+      />
+
+    </Bottom.Navigator>
+  )
+}
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -111,7 +131,9 @@ export default function App() {
 
         <Stack.Screen name='SignIn' component={SignIn} options={{headerShown: false}}/>
 
-        <Stack.Screen name='Home' component={Home}/>
+        <Stack.Screen name='AddProducts' component={AddProducts} options={{}}/>
+
+        <Stack.Screen name='BottomTabs' component={BottomTabs} options={{headerShown: false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   )

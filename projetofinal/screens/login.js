@@ -3,7 +3,7 @@ import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 import { auth } from '../utils/controller';
-import { errorFirebase } from '../utils/AuthError';
+import { errorFirebase } from '../utils/authError';
 
 export default function LogIn({navigation}){
     const [email, setEmail] = useState("");
@@ -13,10 +13,10 @@ export default function LogIn({navigation}){
     const VerifyUser = () => {
         signInWithEmailAndPassword(auth, email, password).then(userCredential => {
             if (email == 'adm@gmail.com'){
-                navigation.navigate();
+                navigation.navigate('AddProducts');
             }
             else{
-                navigation.navigate('Home');
+                navigation.navigate('BottomTabs', {screen: 'Home'});
             }
         })
             .catch((error) => {
