@@ -1,22 +1,59 @@
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useState } from 'react';
+import { auth } from '../utils/controller';
+import { errorFirebase } from '../utils/AuthError';
 
-export default function LogIn(){
+export default function LogIn({navigation}){
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState('');
+
+    const VerifyUser = () => {
+        signInWithEmailAndPassword(auth, email, password).then(userCredential => {
+            if (email == 'adm@gmail.com'){
+                navigation.navigate();
+            }
+            else{
+                navigation.navigate('Home');
+            }
+        })
+            .catch((error) => {
+                console.log('erro', error.message);
+                const msg = errorFirebase(error.code);
+                setError(msg);
+            });
+    }
+
     return(     
         <SafeAreaView style={{flex: 1, backgroundColor: '#9ebc8a'}}>
             <View style={styles.container}>
-                <Text style={styles.title}>NOME</Text>
-                <Image source={require('../assets/logofake.png')}
-                style={{ width: 150, height: 150, marginVertical: 20}}/>
+                <Image source={require('../assets/nome.png')}
+                style={{ width: '100%', height: 80, marginTop: 20}}/>
+                <Image source={require('../assets/logo.png')}
+                style={{ width: 150, height: 150}}/>
                 <Text style={styles.title2}>LOGIN</Text>
                 <View style={{rowGap: 20, width: '100%', alignItems:'center'}}>
-                    <TextInput placeholder='Email' style={styles.input} keyboardType='email-address'></TextInput>
-                    <TextInput placeholder='Senha' style={styles.input} secureTextEntry={true}></TextInput>
+                    <TextInput 
+                        placeholder='Email' 
+                        style={styles.input} 
+                        keyboardType='email-address' 
+                        value={email} 
+                        onChangeText={(text) => {setEmail(text); setError('');}}
+                    />                    
+                    <TextInput 
+                        placeholder='Senha' 
+                        style={styles.input} 
+                        secureTextEntry={true}
+                        value={password}
+                        onChangeText={(text) => {setPassword(text); setError('');}}
+                    />
                 </View>
-                <Text style={styles.error}>{/* {error} */}erros</Text>
+                <Text style={styles.error}>{error}</Text>
                 <View style={{rowGap: 20}}>
-                    <TouchableOpacity style={styles.button}><Text style={styles.buttontext}>Entrar</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.button}><Text  style={styles.buttontext}>Criar conta</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.button}><Text style={styles.buttontext} onPress={VerifyUser}>Entrar</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.button}><Text  style={styles.buttontext} onPress={() => navigation.navigate('SignIn')}>Criar conta</Text></TouchableOpacity>
                 </View>
             </View>
         </SafeAreaView>
@@ -29,12 +66,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         rowGap: 25,
-    },
-    title:{
-        fontSize: 35,
-        marginTop: 35,
-        fontWeight: 800,
-        color: '#3b3b1a',
     },
     title2:{
         fontSize: 25,
@@ -57,7 +88,7 @@ const styles = StyleSheet.create({
     error:{
         color:'#9b4444',
         fontWeight: 600,
-        fontSize: 25,
+        fontSize: 20,
         marginVertical: 15,
     },
     button:{

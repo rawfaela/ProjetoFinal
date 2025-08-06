@@ -94,14 +94,25 @@ export default function App() {
   )
 } */
 
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import SignIn from './screens/signin';
+import LogIn from './screens/login';
+import Home from './screens/home';
+import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
-
-import SignIn from "./screens/signin";
+import { createStackNavigator } from '@react-navigation/stack';
 
 export default function App() {
-  return(
-    <SignIn/>
+  const Stack = createStackNavigator();
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name='LogIn' component={LogIn} options={{ headerShown: false }}/>
+
+        <Stack.Screen name='SignIn' component={SignIn} options={{headerShown: false}}/>
+
+        <Stack.Screen name='Home' component={Home}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   )
 }
