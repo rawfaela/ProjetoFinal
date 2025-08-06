@@ -13,10 +13,10 @@ export default function LogIn({navigation}){
     const VerifyUser = () => {
         signInWithEmailAndPassword(auth, email, password).then(userCredential => {
             if (email == 'adm@gmail.com'){
-                navigation.navigate('AddProducts');
+                navigation.navigate('TabsADM');
             }
             else{
-                navigation.navigate('BottomTabs', {screen: 'Home'});
+                navigation.navigate('TabsClient');
             }
         })
             .catch((error) => {

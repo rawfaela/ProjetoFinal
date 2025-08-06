@@ -12,7 +12,7 @@ export default function SignIn({navigation}){
 
     const VerifyUser = () => {
         createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
-            navigation.navigate('BottomTabs', {screen: 'Home'});
+            navigation.navigate('TabsClient', {screen: 'Home'});
         })
             .catch((error) => {
                 console.log('erro', error.message);
