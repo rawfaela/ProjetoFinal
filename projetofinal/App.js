@@ -103,7 +103,7 @@ import AddProducts from './screens/addProducts';
 import BottomTabs from './components/bottomtabs';
 import Stock from './screens/stock';
 import Orders from './screens/orders';
-
+import Info from './test';
 
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
@@ -137,6 +137,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        
         <Stack.Screen name='LogIn' component={LogIn} options={{ headerShown: false }}/>
 
         <Stack.Screen name='SignIn' component={SignIn} options={{headerShown: false}}/>

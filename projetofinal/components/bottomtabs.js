@@ -6,8 +6,8 @@ export default function BottomTabs({ tabs }) {
   return (
     <Bottom.Navigator
       screenOptions={{
-        tabBarActiveTintColor: '#5f6f52',
-        tabBarInactiveTintColor: '#9ebc8a',
+        tabBarActiveTintColor: '#9ebc8a',
+        tabBarInactiveTintColor: '#5f6f52',
         tabBarStyle: { backgroundColor: '#b99470' }
       }}
     >
@@ -22,7 +22,7 @@ export default function BottomTabs({ tabs }) {
               <tab.font
                 name={tab.icon}
                 size={24}
-                color={focused ? "#5f6f52" : "#9ebc8a"}
+                color={focused ? "#9ebc8a" : "#5f6f52"}
               />
             )
           }}
