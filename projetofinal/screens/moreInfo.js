@@ -1,6 +1,5 @@
-import React from 'react';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Platform, StatusBar } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
 
 export default function MoreInfo() {
   return (

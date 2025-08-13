@@ -108,7 +108,6 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { FontAwesome5, Fontisto, FontAwesome6, FontAwesome } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 function TabsClient() {
   const clientTabs = [
@@ -120,7 +119,6 @@ function TabsClient() {
   return <BottomTabs tabs={clientTabs} />;
 }
 
-//!! mudar fonts icons
 function TabsADM(){
   const AdmTabs = [
     { name: 'Estoque', component: Stock, font: FontAwesome6, icon: 'jar-wheat' },
@@ -134,21 +132,20 @@ export default function App() {
   const Stack = createStackNavigator();
 
   return (
-    <SafeAreaView>
-      <NavigationContainer>
-        <Stack.Navigator>
-          
-          <Stack.Screen name='LogIn' component={LogIn} options={{ headerShown: false }}/>
+    <NavigationContainer>
+      <Stack.Navigator>
+        
+        <Stack.Screen name='LogIn' component={LogIn} options={{ headerShown: false }}/>
 
-          <Stack.Screen name='SignIn' component={SignIn} options={{headerShown: false}}/>
+        <Stack.Screen name='SignIn' component={SignIn} options={{headerShown: false}}/>
 
-          <Stack.Screen name='AddProducts' component={AddProducts} options={{}}/>
+        <Stack.Screen name='AddProducts' component={AddProducts} options={{}}/>
 
-          <Stack.Screen name='TabsClient' component={TabsClient} options={{headerShown: false}}/>
+        <Stack.Screen name='TabsClient' component={TabsClient} options={{headerShown: false}}/>
 
-          <Stack.Screen name='TabsADM' component={TabsADM} options={{headerShown: false}}/>
-        </Stack.Navigator>
-      </NavigationContainer>
-    </SafeAreaView>
+        <Stack.Screen name='TabsADM' component={TabsADM} options={{headerShown: false}}/>
+        
+      </Stack.Navigator>
+    </NavigationContainer>
   )
 }
