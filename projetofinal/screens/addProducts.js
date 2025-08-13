@@ -5,6 +5,7 @@ import { collection, addDoc } from 'firebase/firestore';
 import * as ImagePicker from 'expo-image-picker';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
+//!!! PEDIR AJUDA MARI ENVIAR FOTO (o resto pega)
 export default function AddProducts(){
     const [name, setName] = useState('');
     const [desc, setDesc] = useState('');
@@ -70,7 +71,9 @@ export default function AddProducts(){
                 quantity: parseInt(quantity),
                 image: imageUrl,
             });
-            console.log("produto add ocm sucesso");
+            console.log("produto add com sucesso");
+            showNotif("Produto adicionado com sucesso!", "success");
+
             setName('');
             setDesc('');
             setPrice('');
@@ -78,6 +81,7 @@ export default function AddProducts(){
             setImage(null);
         } catch (error) {
             console.error("Erro ao adicionar produto: ", error);
+            showNotif("Erro ao adicionar produto!", "error");
         } finally {
             setUploading(false);
         }
@@ -85,16 +89,20 @@ export default function AddProducts(){
 
 
     const [notifVisible, setNotifVisible] = useState(false);
+    const [notifMessage, setNotifMessage] = useState('');
+    const [notifType, setNotifType] = useState('success'); // 'success' ou 'error'
     const [fadeAnim] = useState(new Animated.Value(0));
-    const showNotif = () => {
+    const showNotif = (message, type = 'success') => {
+    setNotifMessage(message);
+    setNotifType(type);
     setNotifVisible(true);
-    // Anima entrada
+
     Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 300,
         useNativeDriver: true,
     }).start();
-    // Some depois de 2 segundos
+
     setTimeout(() => {
         Animated.timing(fadeAnim, {
         toValue: 0,
@@ -130,6 +138,11 @@ export default function AddProducts(){
                 </TouchableOpacity>
 
                 <Text style={styles.error}>{error}</Text>
+                {notifVisible && (
+                    <Animated.View style={[styles.notif, { opacity: fadeAnim, backgroundColor: notifType === 'success' ? '#4CAF50' : '#F44336'}]}>
+                        <Text style={styles.notifText}>{notifMessage}</Text>
+                    </Animated.View>
+                )}
             </View>
         </SafeAreaView>
     )
@@ -138,16 +151,16 @@ export default function AddProducts(){
 
 const styles = StyleSheet.create({
     input: {
-    fontSize: 23,
-    height: 50,
-    width: '90%',
-    margin: 10,
-    color: 'white',
-    borderWidth: 3, 
-    padding: 10,
-    borderRadius: 7,
-    backgroundColor:' rgb(167, 191, 226)',
-    borderColor: 'rgba(45, 69, 121, 1)'
+        fontSize: 23,
+        height: 50,
+        width: '90%',
+        margin: 10,
+        color: 'white',
+        borderWidth: 3, 
+        padding: 10,
+        borderRadius: 7,
+        backgroundColor:' rgb(167, 191, 226)',
+        borderColor: 'rgba(45, 69, 121, 1)'
     },
     button:{
         backgroundColor:'#5f6f52',
@@ -158,5 +171,19 @@ const styles = StyleSheet.create({
     image:{
         height: 100,
         width: 100,
-    }
+    },
+    error:{
+        color: '#F44336',
+        fontSize: 20,
+    },
+    notif: {
+        alignSelf: 'center',
+        padding: 12,
+        borderRadius: 8,
+    },
+    notifText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 })

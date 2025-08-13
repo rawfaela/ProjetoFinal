@@ -103,7 +103,6 @@ import AddProducts from './screens/addProducts';
 import BottomTabs from './components/bottomtabs';
 import Stock from './screens/stock';
 import Orders from './screens/orders';
-import Info from './test';
 
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
