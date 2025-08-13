@@ -51,8 +51,8 @@ export default function SignIn({navigation}){
                 <Text style={styles.error}>{error}</Text>
                 
                 <View style={{rowGap: 20}}>
-                    <TouchableOpacity style={styles.button}><Text style={styles.buttontext} onPress={VerifyUser}>Criar conta</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.button}><Text  style={styles.buttontext} onPress={ ()=> {navigation.goBack()}} >Voltar ao login</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={VerifyUser}><Text style={styles.buttontext}>Criar conta</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={ ()=> {navigation.goBack()}}><Text  style={styles.buttontext}>Voltar ao login</Text></TouchableOpacity>
                 
                 </View>
             </View>

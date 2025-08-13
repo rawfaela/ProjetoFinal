@@ -1,9 +1,13 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import MoreInfo from "../screens/moreInfo";
+import { TouchableOpacity } from "react-native";
 
 export default function BottomTabs({ tabs }) {
   const Bottom = createBottomTabNavigator();
 
   return (
+
+
     <Bottom.Navigator
       screenOptions={{
         tabBarActiveTintColor: '#9ebc8a',
@@ -28,6 +32,18 @@ export default function BottomTabs({ tabs }) {
           }}
         />
       ))}
+      <Bottom.Screen name="MoreInfo" component={MoreInfo} options={({ navigation }) => ({
+        title: 'Detalhes do Livro', tabBarStyle: { display: 'none' }, tabBarButton: () => null, tabBarItemStyle: { position: 'absolute', left: -1000, width: 0, height: 0, }, headerStyle: {
+          backgroundColor: 'rgb(193, 175, 243)',
+        }, headerLeft: () => (
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{ marginLeft: 15 }}
+          >
+            <Text style={{ fontSize: 25 }}>⭠ </Text>
+          </TouchableOpacity>
+        ),
+      })} />
     </Bottom.Navigator>
   );
 }

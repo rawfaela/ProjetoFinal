@@ -1,12 +1,14 @@
-import { Text, View, StyleSheet, TextInput, Image, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Text, View, StyleSheet, TextInput, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar } from 'react-native';
 import { useState } from 'react';
+import { useNavigation } from "@react-navigation/native";
 
 export default function Home(){
+  const navigation = useNavigation();
   const [search, setSearch] = useState('');
 
   return(
-    <SafeAreaView style={{flex: 1, backgroundColor: '#edbc91'}}>
-        <View style={styles.container}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#eddaba'}}>
+        <View style={[styles.container, Platform.OS === 'android' && { marginTop: StatusBar.currentHeight || 0 }]}>
           <View style={styles.searchContainer}>
           <TextInput
           style={styles.input}
@@ -20,16 +22,16 @@ export default function Home(){
 
         <View style={styles.cardsContainer}>
           <View style={styles.background}>
-            <TouchableOpacity style={styles.touchContainer}>  
-                <Image source={require('../assets/fotinho.jpg')} style={styles.img}/>
+            <TouchableOpacity style={styles.touchContainer} onPress={() => navigation.navigate('MoreInfo')}>  
+                <Image source={require('../assets/fotinho.jpg')} style={styles.img}></Image>
                 <View>
-                    <Text style={styles.productName}>Nome</Text>
-                    <Text style={styles.price}>Preço</Text>
+                  <Text style={styles.productName}>Nome</Text>
+                  <Text style={styles.price}>Preço</Text>
                 </View>
             </TouchableOpacity>
           </View>
           <View style={styles.background}>
-            <TouchableOpacity style={styles.touchContainer}>  
+            <TouchableOpacity style={styles.touchContainer}  onPress={() => navigation.navigate('MoreInfo')}>  
                 <Image source={require('../assets/fotinho.jpg')} style={styles.img}/>
                 <View>
                     <Text style={styles.productName}>Nome</Text>
