@@ -142,7 +142,9 @@ export default function App() {
         <Stack.Screen name='TabsClient' component={TabsClient} options={{headerShown: false}}/>
 
         <Stack.Screen name='TabsADM' component={TabsADM} options={{headerShown: false}}/>
-        
+  
+        <Stack.Screen name='MoreInfo' component={MoreInfo} options={{headerShown: false}}/>
+
       </Stack.Navigator>
     </NavigationContainer>
   )
