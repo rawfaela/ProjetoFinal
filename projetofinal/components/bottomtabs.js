@@ -32,18 +32,6 @@ export default function BottomTabs({ tabs }) {
           }}
         />
       ))}
-      <Bottom.Screen name="MoreInfo" component={MoreInfo} options={({ navigation }) => ({
-        title: 'Detalhes do Livro', tabBarStyle: { display: 'none' }, tabBarButton: () => null, tabBarItemStyle: { position: 'absolute', left: -1000, width: 0, height: 0, }, headerStyle: {
-          backgroundColor: '#b99470',
-        }, headerLeft: () => (
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={{ marginLeft: 15 }}
-          >
-            <Text style={{ fontSize: 25 }}>⭠ </Text>
-          </TouchableOpacity>
-        ),
-      })} />
     </Bottom.Navigator>
   );
 }
