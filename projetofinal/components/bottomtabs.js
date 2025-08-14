@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MoreInfo from "../screens/moreInfo";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, Text } from "react-native";
 
 export default function BottomTabs({ tabs }) {
   const Bottom = createBottomTabNavigator();
