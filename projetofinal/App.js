@@ -139,8 +139,6 @@ export default function App() {
 
         <Stack.Screen name='SignIn' component={SignIn} options={{headerShown: false}}/>
 
-        <Stack.Screen name='AddProducts' component={AddProducts} options={{}}/>
-
         <Stack.Screen name='TabsClient' component={TabsClient} options={{headerShown: false}}/>
 
         <Stack.Screen name='TabsADM' component={TabsADM} options={{headerShown: false}}/>
