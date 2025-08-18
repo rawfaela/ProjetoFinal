@@ -12,41 +12,11 @@ export default function AddProducts(){
     const [price, setPrice] = useState('');
     const [quantity, setQuantity] = useState('');
     const [error, setError] = useState('');
-    const [image, setImage] = useState(null);
+    const [image, setImage] = useState('');
     const [uploading, setUploading] = useState(false);
 
-    const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaType,
-        allowsEditing: true,
-        quality: 1,
-        });
-
-        console.log(result);
-
-        if (!result.canceled) {
-        setImage(result.assets[0].uri);
-        }
-    };
-
-    const uploadImageAsync = async (uri) => {
-        // Converte imagem em blob para enviar
-        const response = await fetch(uri);
-        const blob = await response.blob();
-
-        // Nome único no storage
-        const filename = `products/${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`;
-        const storageRef = ref(storage, filename);
-
-        // Faz upload
-        await uploadBytes(storageRef, blob, { contentType: 'image/jpeg' });
-
-        // Pega URL pública
-        return await getDownloadURL(storageRef);
-    };
-
     const validateFields = () => {
-        if (!name.trim() || !desc.trim() || !price.trim() || !quantity.trim() || !image) {
+        if (!name.trim() || !desc.trim() || !price.trim() || !quantity.trim() || !image.trim()) {
             setError("Por favor, preencha todos os campos.");
             return false;
         }
@@ -61,15 +31,12 @@ export default function AddProducts(){
 
         try {
             setUploading(true);
-            // Faz upload da imagem e pega URL
-            const imageUrl = await uploadImageAsync(image);
-
             await addDoc(collection(db, "products"), {
                 name: name.trim(),
                 description: desc.trim(),
                 price: parseFloat(price),
                 quantity: parseInt(quantity),
-                image: imageUrl,
+                image: image.trim(),
             });
             console.log("produto add com sucesso");
             showNotif("Produto adicionado com sucesso!", "success");
@@ -78,7 +45,7 @@ export default function AddProducts(){
             setDesc('');
             setPrice('');
             setQuantity('');
-            setImage(null);
+            setImage('');
         } catch (error) {
             console.error("Erro ao adicionar produto: ", error);
             showNotif("Erro ao adicionar produto!", "error");
@@ -116,74 +83,175 @@ export default function AddProducts(){
 
 
     return(
-        <SafeAreaView>
-            <Text>Add prdudtuo</Text>
+        <SafeAreaView style={styles.container}>
+            <Text style={styles.title}>Adicionar Produto</Text>
+            
+            {error ? <Text style={styles.error}>{error}</Text> : null}
 
-            <View style={{alignItems:'center'}}>
-                <TextInput style={styles.input} placeholder='nome' value={name} onChangeText={setName}></TextInput>
+            <View style={styles.formContainer}>
+                <TextInput 
+                    style={styles.input} 
+                    placeholder='Nome do produto' 
+                    value={name} 
+                    onChangeText={setName}
+                />
 
-                <TextInput style={styles.input} placeholder='descricao' value={desc} onChangeText={setDesc}></TextInput>
+                <TextInput 
+                    style={styles.input} 
+                    placeholder='Descrição' 
+                    value={desc} 
+                    onChangeText={setDesc}
+                    multiline
+                />
 
-                <TextInput style={styles.input} placeholder='preco' value={price} onChangeText={setPrice} keyboardType='numeric'></TextInput>
+                <TextInput 
+                    style={styles.input} 
+                    placeholder='Preço (R$)' 
+                    value={price} 
+                    onChangeText={(text) => setPrice(text.replace(',', '.'))}
+                    keyboardType='decimal-pad'
+                />
 
-                <TextInput style={styles.input} placeholder='quantidade' value={quantity} onChangeText={setQuantity} keyboardType='numeric'></TextInput>
+                <TextInput 
+                    style={styles.input} 
+                    placeholder='Quantidade' 
+                    value={quantity} 
+                    onChangeText={setQuantity} 
+                    keyboardType='number-pad'
+                />
 
-                <TouchableOpacity style={styles.img} onPress={pickImage}>
-                    <Text style={{fontSize: 20}}>Adicionar imagem</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder='URL da imagem'
+                    value={image}
+                    onChangeText={setImage}
+                />
+
+                {image && (
+                    <View style={styles.imagePreview}>
+                        <Image source={{ uri: image }} style={styles.previewImage} />
+                        <Text style={styles.imageText}>Imagem pronta para upload</Text>
+                    </View>
+                )}
+
+                <TouchableOpacity 
+                    style={[styles.button, uploading && styles.buttonDisabled]} 
+                    onPress={addProduct}
+                    disabled={uploading}
+                >
+                    <Text style={styles.buttonText}>
+                        {uploading ? 'Enviando...' : 'Adicionar Produto'}
+                    </Text>
                 </TouchableOpacity>
-
-
-                <TouchableOpacity style={styles.button} onPress={addProduct}>
-                    <Text style={{ color: 'white', fontSize: 26 }}>{uploading ? 'Enviando...' : 'Enviar'}</Text>
-                </TouchableOpacity>
-
-                <Text style={styles.error}>{error}</Text>
+                
                 {notifVisible && (
-                    <Animated.View style={[styles.notif, { opacity: fadeAnim, backgroundColor: notifType === 'success' ? '#4CAF50' : '#F44336'}]}>
+                    <Animated.View style={[
+                        styles.notif, 
+                        { 
+                            opacity: fadeAnim, 
+                            backgroundColor: notifType === 'success' ? '#4CAF50' : '#F44336'
+                        }
+                    ]}>
                         <Text style={styles.notifText}>{notifMessage}</Text>
                     </Animated.View>
                 )}
             </View>
         </SafeAreaView>
     )
-
 }
 
 const styles = StyleSheet.create({
-    input: {
-        fontSize: 23,
-        height: 50,
-        width: '90%',
-        margin: 10,
-        color: 'white',
-        borderWidth: 3, 
-        padding: 10,
-        borderRadius: 7,
-        backgroundColor:' rgb(167, 191, 226)',
-        borderColor: 'rgba(45, 69, 121, 1)'
+    container: {
+        flex: 1,
+        backgroundColor: '#f5f5f5',
     },
-    button:{
-        backgroundColor:'#5f6f52',
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: '#333',
+    },
+    formContainer: {
         alignItems: 'center',
-        borderRadius: 17,
-        padding: 9,
+        paddingHorizontal: 20,
     },
-    image:{
-        height: 100,
-        width: 100,
+    input: {
+        fontSize: 18,
+        height: 50,
+        width: '100%',
+        margin: 10,
+        color: '#333',
+        borderWidth: 2,
+        padding: 15,
+        borderRadius: 10,
+        backgroundColor: '#fff',
+        borderColor: '#ddd',
     },
-    error:{
+    imageButton: {
+        backgroundColor: '#6c7b7f',
+        alignItems: 'center',
+        borderRadius: 10,
+        padding: 15,
+        marginVertical: 10,
+        width: '100%',
+    },
+    imageButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    imagePreview: {
+        marginVertical: 10,
+        alignItems: 'center',
+    },
+    previewImage: {
+        width: 120,
+        height: 120,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: '#4CAF50',
+    },
+    imageText: {
+        fontSize: 14,
+        color: '#4CAF50',
+        marginTop: 5,
+        fontWeight: 'bold',
+    },
+    button: {
+        backgroundColor: '#5f6f52',
+        alignItems: 'center',
+        borderRadius: 10,
+        padding: 15,
+        marginTop: 20,
+        width: '100%',
+    },
+    buttonDisabled: {
+        backgroundColor: '#ccc',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    error: {
         color: '#F44336',
-        fontSize: 20,
+        fontSize: 16,
+        textAlign: 'center',
+        paddingVertical: 10,
     },
     notif: {
+        position: 'absolute',
+        bottom: 50,
         alignSelf: 'center',
-        padding: 12,
-        borderRadius: 8,
+        padding: 15,
+        borderRadius: 10,
+        minWidth: 200,
+        alignItems: 'center',
     },
     notifText: {
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
+        textAlign: 'center',
     },
-})
+});
