@@ -5,7 +5,6 @@ import { collection, addDoc } from 'firebase/firestore';
 import * as ImagePicker from 'expo-image-picker';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-//!!! PEDIR AJUDA MARI ENVIAR FOTO (o resto pega)
 export default function AddProducts(){
     const [name, setName] = useState('');
     const [desc, setDesc] = useState('');
