@@ -1,4 +1,5 @@
-import {Text, View, StyleSheet, TouchableOpacity, TextInput, Animated, SafeAreaView, Image} from 'react-native'
+import {Text, View, StyleSheet, TouchableOpacity, TextInput, Animated, Image} from 'react-native'
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { db, storage } from '../utils/controller';
 import { collection, addDoc } from 'firebase/firestore';
@@ -82,80 +83,82 @@ export default function AddProducts(){
 
 
     return(
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>Adicionar Produto</Text>
-            
-            {error ? <Text style={styles.error}>{error}</Text> : null}
-
-            <View style={styles.formContainer}>
-                <TextInput 
-                    style={styles.input} 
-                    placeholder='Nome do produto' 
-                    value={name} 
-                    onChangeText={setName}
-                />
-
-                <TextInput 
-                    style={styles.input} 
-                    placeholder='Descrição' 
-                    value={desc} 
-                    onChangeText={setDesc}
-                    multiline
-                />
-
-                <TextInput 
-                    style={styles.input} 
-                    placeholder='Preço (R$)' 
-                    value={price} 
-                    onChangeText={(text) => setPrice(text.replace(',', '.'))}
-                    keyboardType='decimal-pad'
-                />
-
-                <TextInput 
-                    style={styles.input} 
-                    placeholder='Quantidade' 
-                    value={quantity} 
-                    onChangeText={setQuantity} 
-                    keyboardType='number-pad'
-                />
-
-                <TextInput
-                    style={styles.input}
-                    placeholder='URL da imagem'
-                    value={image}
-                    onChangeText={setImage}
-                />
-
-                {image && (
-                    <View style={styles.imagePreview}>
-                        <Image source={{ uri: image }} style={styles.previewImage} />
-                        <Text style={styles.imageText}>Imagem pronta para upload</Text>
-                    </View>
-                )}
-
-                <TouchableOpacity 
-                    style={[styles.button, uploading && styles.buttonDisabled]} 
-                    onPress={addProduct}
-                    disabled={uploading}
-                >
-                    <Text style={styles.buttonText}>
-                        {uploading ? 'Enviando...' : 'Adicionar Produto'}
-                    </Text>
-                </TouchableOpacity>
+        <SafeAreaProvider>
+            <SafeAreaView style={styles.container}>
+                <Text style={styles.title}>Adicionar Produto</Text>
                 
-                {notifVisible && (
-                    <Animated.View style={[
-                        styles.notif, 
-                        { 
-                            opacity: fadeAnim, 
-                            backgroundColor: notifType === 'success' ? '#4CAF50' : '#F44336'
-                        }
-                    ]}>
-                        <Text style={styles.notifText}>{notifMessage}</Text>
-                    </Animated.View>
-                )}
-            </View>
-        </SafeAreaView>
+                {error ? <Text style={styles.error}>{error}</Text> : null}
+
+                <View style={styles.formContainer}>
+                    <TextInput 
+                        style={styles.input} 
+                        placeholder='Nome do produto' 
+                        value={name} 
+                        onChangeText={setName}
+                    />
+
+                    <TextInput 
+                        style={styles.input} 
+                        placeholder='Descrição' 
+                        value={desc} 
+                        onChangeText={setDesc}
+                        multiline
+                    />
+
+                    <TextInput 
+                        style={styles.input} 
+                        placeholder='Preço (R$)' 
+                        value={price} 
+                        onChangeText={(text) => setPrice(text.replace(',', '.'))}
+                        keyboardType='decimal-pad'
+                    />
+
+                    <TextInput 
+                        style={styles.input} 
+                        placeholder='Quantidade' 
+                        value={quantity} 
+                        onChangeText={setQuantity} 
+                        keyboardType='number-pad'
+                    />
+
+                    <TextInput
+                        style={styles.input}
+                        placeholder='URL da imagem'
+                        value={image}
+                        onChangeText={setImage}
+                    />
+
+                    {image && (
+                        <View style={styles.imagePreview}>
+                            <Image source={{ uri: image }} style={styles.previewImage} />
+                            <Text style={styles.imageText}>Imagem pronta para upload</Text>
+                        </View>
+                    )}
+
+                    <TouchableOpacity 
+                        style={[styles.button, uploading && styles.buttonDisabled]} 
+                        onPress={addProduct}
+                        disabled={uploading}
+                    >
+                        <Text style={styles.buttonText}>
+                            {uploading ? 'Enviando...' : 'Adicionar Produto'}
+                        </Text>
+                    </TouchableOpacity>
+                    
+                    {notifVisible && (
+                        <Animated.View style={[
+                            styles.notif, 
+                            { 
+                                opacity: fadeAnim, 
+                                backgroundColor: notifType === 'success' ? '#4CAF50' : '#F44336'
+                            }
+                        ]}>
+                            <Text style={styles.notifText}>{notifMessage}</Text>
+                        </Animated.View>
+                    )}
+                </View>
+            </SafeAreaView>
+        </SafeAreaProvider>
     )
 }
 
