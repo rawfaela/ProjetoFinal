@@ -162,13 +162,13 @@ export default function AddProducts(){
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#eddaba',
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#333',
+        color: 'black',
     },
     formContainer: {
         alignItems: 'center',
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         padding: 15,
         borderRadius: 10,
-        backgroundColor: '#fff',
+        backgroundColor: '#b99470',
         borderColor: '#ddd',
     },
     imageButton: {
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     button: {
-        backgroundColor: '#5f6f52',
+        backgroundColor: '#6a7e4e',
         alignItems: 'center',
         borderRadius: 10,
         padding: 15,
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     notifText: {
-        color: 'white',
+        color: '#9b4444',
         fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'center',
