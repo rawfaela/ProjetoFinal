@@ -1,54 +1,36 @@
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
-
-function MoreInfoContent() {
-  const insets = useSafeAreaInsets();
-  
-  return (
-    <View style={[styles.container, { backgroundColor: '#F0C091' }]}>
-      <View style={styles.scrollContainer}>
-        <ScrollView 
-          contentContainerStyle={[styles.content, { paddingBottom: 100 }]}
-          showsVerticalScrollIndicator={false}>
-          <View style={styles.imageContainer}>
-            <Image
-              source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMdgifDk42jqcn9ili_2tEphnb8S_oLVPl4w&s' }}
-              style={styles.image}
-              resizeMode="cover"
-            />
-          </View>
-          <Text style={styles.price}>R$ 99,90</Text>
-          <Text style={styles.name}>Pulseira de Prata</Text>
-          <Text style={styles.stock}>Em estoque: 45</Text>
-          <Text style={styles.description}>
-            Descrição - Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Praesent tempus odio in nibh venenatis, eu euismod enim pharetra.Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Praesent tempus odio in nibh venenatis, eu euismod enim pharetra.Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Praesent tempus odio in nibh venenatis, eu euismod enim pharetra.Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Praesent tempus odio in nibh venenatis, eu euismod enim pharetra.Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Praesent tempus odio in nibh venenatis, eu euismod enim pharetra.Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Praesent tempus odio in nibh venenatis, eu euismod enim pharetra.
-          </Text>
-        </ScrollView>
-      </View>
-      
-      <View style={[styles.addButtonContainer, { paddingBottom: insets.bottom }]}>
-        <TouchableOpacity style={styles.addButton}>
-          <Text style={styles.addButtonText}>Adicionar ao Carrinho</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
+import { useRoute } from "@react-navigation/native";
 
 export default function MoreInfo() {
   const route = useRoute();
+  const insets = useSafeAreaInsets();
   const { item } = route.params;
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeArea} edges={['top']}>
-        <MoreInfoContent />
+        <View style={[styles.container, { backgroundColor: '#F0C091' }]}>
+          <View style={styles.scrollContainer}>
+            <ScrollView 
+              contentContainerStyle={[styles.content, { paddingBottom: 100 }]}
+              showsVerticalScrollIndicator={false}>
+              <View style={styles.imageContainer}>
+                <Image source={{ uri: item.image }} style={styles.image} />
+              </View>
+              <Text style={styles.price}>R${Number(item.price).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
+              <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.stock}>{item.quantity}</Text>
+              <Text style={styles.description}>{item.description}</Text>
+            </ScrollView>
+          </View>
+          
+          <View style={[styles.addButtonContainer, { paddingBottom: insets.bottom }]}>
+            <TouchableOpacity style={styles.addButton}>
+              <Text style={styles.addButtonText}>Adicionar ao Carrinho</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </SafeAreaView>
     </SafeAreaProvider>
   );

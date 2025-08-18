@@ -27,37 +27,16 @@ export default function Home(){
 
   return(
     <SafeAreaView style={{flex: 1, backgroundColor: '#eddaba'}}>
-        <View style={[styles.container, Platform.OS === 'android' && { marginTop: StatusBar.currentHeight || 0 }]}>
-          <View style={styles.searchContainer}>
-            <TextInput
-            style={styles.input}
-            placeholder="Pesquisar..."
-            placeholderTextColor="#666"
-            value={search}
-            onChangeText={setSearch}
-            />
-            <Image source={require('../assets/lupinha.png')} style={styles.icon} />
-          </View>
-
-        <View style={styles.cardsContainer}>
-          <View style={styles.background}>
-            <TouchableOpacity style={styles.touchContainer} onPress={() => navigation.navigate('MoreInfo')}>  
-                <Image source={require('../assets/fotinho.jpg')} style={styles.img}></Image>
-                <View>
-                  <Text style={styles.name}>Nome</Text>
-                  <Text style={styles.price}>Preço</Text>
-                </View>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.background}>
-            <TouchableOpacity style={styles.touchContainer}  onPress={() => navigation.navigate('MoreInfo')}>  
-                <Image source={require('../assets/fotinho.jpg')} style={styles.img}/>
-                <View>
-                    <Text style={styles.name}>Nome</Text>
-                    <Text style={styles.price}>Preço</Text>
-                </View>
-            </TouchableOpacity>
-          </View>
+      <View style={[styles.container, Platform.OS === 'android' && { marginTop: StatusBar.currentHeight || 0 }]}>
+        <View style={styles.searchContainer}>
+          <TextInput
+          style={styles.input}
+          placeholder="Pesquisar..."
+          placeholderTextColor="#666"
+          value={search}
+          onChangeText={setSearch}
+          />
+          <Image source={require('../assets/lupinha.png')} style={styles.icon} />
         </View>
         
         <FlatList data={products} renderItem={({item}) => (
@@ -66,7 +45,7 @@ export default function Home(){
                 <Image source={{uri: item.image}} style={styles.img}></Image>
                 <View>
                   <Text style={styles.name}>{item.name}</Text>
-                  <Text style={styles.price}>{item.price}</Text>
+                  <Text style={styles.price}>R${Number(item.price).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
                 </View>
             </TouchableOpacity>
           </View>
@@ -120,7 +99,8 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     },
     name: {
-      fontSize: 14
+      fontSize: 14,
+      textAlign: 'center',
     },
     price: {
       fontSize: 16,
