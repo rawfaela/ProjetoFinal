@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 10,
         backgroundColor: '#b99470',
-        borderColor: '#ddd',
+        borderColor: '#333',
     },
     imageButton: {
         backgroundColor: '#6c7b7f',

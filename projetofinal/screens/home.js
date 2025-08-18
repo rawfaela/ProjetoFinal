@@ -1,31 +1,50 @@
-import { Text, View, StyleSheet, TextInput, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar } from 'react-native';
-import { useState } from 'react';
+import { Text, View, StyleSheet, TextInput, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar, FlatList } from 'react-native';
+import { useEffect, useState } from 'react';
+import { db } from '../utils/controller';
+import { collection, getDocs } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 
 export default function Home(){
   const navigation = useNavigation();
   const [search, setSearch] = useState('');
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'products'));
+        const array = [];
+        querySnapshot.forEach((doc) => {
+          array.push({id: doc.id, ...doc.data() });
+        });
+        setProducts(array);
+      } catch (error){
+        console.log("erro ao carregar produtos: ", error);
+      }
+    }
+    loadProducts();
+  }, []);
 
   return(
     <SafeAreaView style={{flex: 1, backgroundColor: '#eddaba'}}>
         <View style={[styles.container, Platform.OS === 'android' && { marginTop: StatusBar.currentHeight || 0 }]}>
           <View style={styles.searchContainer}>
-          <TextInput
-          style={styles.input}
-          placeholder="Pesquisar..."
-          placeholderTextColor="#666"
-          value={search}
-          onChangeText={setSearch}
-          />
-          <Image source={require('../assets/lupinha.png')} style={styles.icon} />
-        </View>
+            <TextInput
+            style={styles.input}
+            placeholder="Pesquisar..."
+            placeholderTextColor="#666"
+            value={search}
+            onChangeText={setSearch}
+            />
+            <Image source={require('../assets/lupinha.png')} style={styles.icon} />
+          </View>
 
         <View style={styles.cardsContainer}>
           <View style={styles.background}>
             <TouchableOpacity style={styles.touchContainer} onPress={() => navigation.navigate('MoreInfo')}>  
                 <Image source={require('../assets/fotinho.jpg')} style={styles.img}></Image>
                 <View>
-                  <Text style={styles.productName}>Nome</Text>
+                  <Text style={styles.name}>Nome</Text>
                   <Text style={styles.price}>Preço</Text>
                 </View>
             </TouchableOpacity>
@@ -34,12 +53,24 @@ export default function Home(){
             <TouchableOpacity style={styles.touchContainer}  onPress={() => navigation.navigate('MoreInfo')}>  
                 <Image source={require('../assets/fotinho.jpg')} style={styles.img}/>
                 <View>
-                    <Text style={styles.productName}>Nome</Text>
+                    <Text style={styles.name}>Nome</Text>
                     <Text style={styles.price}>Preço</Text>
                 </View>
             </TouchableOpacity>
           </View>
         </View>
+        
+        <FlatList data={products} renderItem={({item}) => (
+          <View style={styles.background}>
+            <TouchableOpacity style={styles.touchContainer} onPress={() => navigation.navigate('MoreInfo', {item})}>  
+                <Image source={{uri: item.image}} style={styles.img}></Image>
+                <View>
+                  <Text style={styles.name}>{item.name}</Text>
+                  <Text style={styles.price}>{item.price}</Text>
+                </View>
+            </TouchableOpacity>
+          </View>
+        )} keyExtractor={item => item.id} showsVerticalScrollIndicator={false} numColumns={2} columnWrapperStyle={{justifyContent: 'space-around'}} />
       </View>
     </SafeAreaView>
   )
@@ -88,7 +119,7 @@ const styles = StyleSheet.create({
       flex: 1,
       alignItems: 'center',
     },
-    productName: {
+    name: {
       fontSize: 14
     },
     price: {

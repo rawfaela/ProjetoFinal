@@ -42,6 +42,9 @@ function MoreInfoContent() {
 }
 
 export default function MoreInfo() {
+  const route = useRoute();
+  const { item } = route.params;
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeArea} edges={['top']}>
