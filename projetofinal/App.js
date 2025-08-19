@@ -104,6 +104,7 @@ import BottomTabs from './components/bottomtabs';
 import Stock from './screens/stock';
 import Orders from './screens/orders';
 import MoreInfo from './screens/moreInfo';
+import { CartProvider } from './utils/cartProvider';
 
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
@@ -133,20 +134,23 @@ export default function App() {
   const Stack = createStackNavigator();
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        
-        <Stack.Screen name='LogIn' component={LogIn} options={{ headerShown: false }}/>
+    <CartProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          
+          <Stack.Screen name='LogIn' component={LogIn} options={{ headerShown: false }}/>
 
-        <Stack.Screen name='SignIn' component={SignIn} options={{headerShown: false}}/>
+          <Stack.Screen name='SignIn' component={SignIn} options={{headerShown: false}}/>
 
-        <Stack.Screen name='TabsClient' component={TabsClient} options={{headerShown: false}}/>
+          <Stack.Screen name='TabsClient' component={TabsClient} options={{headerShown: false}}/>
 
-        <Stack.Screen name='TabsADM' component={TabsADM} options={{headerShown: false}}/>
-  
-        <Stack.Screen name='MoreInfo' component={MoreInfo} options={{headerShown: false}}/>
+          <Stack.Screen name='TabsADM' component={TabsADM} options={{headerShown: false}}/>
+    
+          <Stack.Screen name='MoreInfo' component={MoreInfo} options={{headerShown: false}}/>
 
-      </Stack.Navigator>
-    </NavigationContainer>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </CartProvider>
+    
   )
 }

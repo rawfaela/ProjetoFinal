@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useRoute, useNavigation } from "@react-navigation/native";
-import { useCart } from '../components/cartProvider';
+import { useCart } from '../utils/cartProvider';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../utils/controller';
 
