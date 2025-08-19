@@ -8,9 +8,9 @@ import { db } from '../utils/controller';
 
 export default function MoreInfo() {
   const route = useRoute();
+  const { item } = route.params;
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
-  const { item } = route.params;
   const { addProduct } = useCart();
   const [products, setProducts] = useState([]);
 
