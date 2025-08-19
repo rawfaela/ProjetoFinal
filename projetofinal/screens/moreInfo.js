@@ -4,7 +4,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Alert } fr
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { useCart } from '../components/cartProvider';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../path-to-your-firebase-config'; // Ajuste o caminho conforme necessário
+import { db } from '../utils/controller';
 
 export default function MoreInfo() {
   const route = useRoute();
