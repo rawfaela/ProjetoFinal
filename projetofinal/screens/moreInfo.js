@@ -1,40 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { useRoute, useNavigation } from "@react-navigation/native";
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRoute } from "@react-navigation/native";
 import { useCart } from '../utils/cartProvider';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../utils/controller';
 
 export default function MoreInfo() {
   const route = useRoute();
   const { item } = route.params;
-  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
-  const { addProduct } = useCart();
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    async function loadProducts() {
-      try {
-        const querySnapshot = await getDocs(collection(db, 'produtos'));
-        const list = [];
-        querySnapshot.forEach((doc) => {
-          list.push({ id: doc.id, ...doc.data() });
-        });
-        setProducts(list);
-      } catch (error) {
-        console.log("Erro ao buscar produtos:", error);
-      }
-    }
-    loadProducts();
-  }, []);
+  const { addToCart } = useCart();
 
   const handleAddToCart = () => {
-    const foiAdicionado = addProduct(item);
+    const wasAdded = addToCart(item);
     
-    if (foiAdicionado) {
-      Alert.alert('Sucesso!', 'Produto adicionado ao carrinho!');
+    if (wasAdded) {
+      //!! Alert.alert('Sucesso!', 'Produto adicionado ao carrinho!');
       console.log('Produto adicionado ao carrinho:', item);
     } else {
       Alert.alert('Atenção', 'Este produto já foi adicionado ao carrinho!');
