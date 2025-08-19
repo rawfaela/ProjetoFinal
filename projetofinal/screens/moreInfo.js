@@ -2,21 +2,23 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Alert } fr
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRoute } from "@react-navigation/native";
 import { useCart } from '../utils/cartProvider';
+import { useNotification } from '../utils/notif';
 
 export default function MoreInfo() {
   const route = useRoute();
   const { item } = route.params;
   const insets = useSafeAreaInsets();
   const { addToCart } = useCart();
+  const { showNotif } = useNotification();
 
   const handleAddToCart = () => {
     const wasAdded = addToCart(item);
     
     if (wasAdded) {
-      //!! Alert.alert('Sucesso!', 'Produto adicionado ao carrinho!');
+      showNotif('Produto adicionado ao carrinho!', 'success');
       console.log('Produto adicionado ao carrinho:', item);
     } else {
-      Alert.alert('Atenção', 'Este produto já foi adicionado ao carrinho!');
+      showNotif('Este produto já foi adicionado ao carrinho!', 'error');
       console.log('Produto já existe no carrinho:', item);
     }
   };

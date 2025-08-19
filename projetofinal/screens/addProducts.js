@@ -3,22 +3,22 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { db } from '../utils/controller';
 import { collection, addDoc } from 'firebase/firestore';
+import { useNotification } from '../utils/notif';
 
 export default function AddProducts(){
     const [name, setName] = useState('');
     const [desc, setDesc] = useState('');
     const [price, setPrice] = useState('');
     const [quantity, setQuantity] = useState('');
-    const [error, setError] = useState('');
     const [image, setImage] = useState('');
     const [uploading, setUploading] = useState(false);
+    const { showNotif } = useNotification();
 
     const validateFields = () => {
         if (!name.trim() || !desc.trim() || !price.trim() || !quantity.trim() || !image.trim()) {
-            setError("Por favor, preencha todos os campos.");
+            showNotif("Por favor, preencha todos os campos.", 'error');
             return false;
         }
-        setError('');
         return true;
     };
 
@@ -52,41 +52,10 @@ export default function AddProducts(){
         }
     }
 
-
-    const [notifVisible, setNotifVisible] = useState(false);
-    const [notifMessage, setNotifMessage] = useState('');
-    const [notifType, setNotifType] = useState('success'); // 'success' ou 'error'
-    const [fadeAnim] = useState(new Animated.Value(0));
-    const showNotif = (message, type = 'success') => {
-    setNotifMessage(message);
-    setNotifType(type);
-    setNotifVisible(true);
-
-    Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-    }).start();
-
-    setTimeout(() => {
-        Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-        }).start(() => {
-        setNotifVisible(false);
-        });
-    }, 2000);
-    };
-
-
     return(
         <SafeAreaProvider>
             <SafeAreaView style={styles.container}>
                 <Text style={styles.title}>Adicionar Produto</Text>
-                
-                {error ? <Text style={styles.error}>{error}</Text> : null}
-
                 <View style={styles.formContainer}>
                     <TextInput 
                         style={styles.input} 
@@ -142,18 +111,6 @@ export default function AddProducts(){
                             {uploading ? 'Enviando...' : 'Adicionar Produto'}
                         </Text>
                     </TouchableOpacity>
-                    
-                    {notifVisible && (
-                        <Animated.View style={[
-                            styles.notif, 
-                            { 
-                                opacity: fadeAnim, 
-                                backgroundColor: notifType === 'success' ? '#4CAF50' : '#F44336'
-                            }
-                        ]}>
-                            <Text style={styles.notifText}>{notifMessage}</Text>
-                        </Animated.View>
-                    )}
                 </View>
             </SafeAreaView>
         </SafeAreaProvider>
@@ -233,26 +190,5 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
-    },
-    error: {
-        color: '#F44336',
-        fontSize: 16,
-        textAlign: 'center',
-        paddingVertical: 10,
-    },
-    notif: {
-        position: 'absolute',
-        bottom: 50,
-        alignSelf: 'center',
-        padding: 15,
-        borderRadius: 10,
-        minWidth: 200,
-        alignItems: 'center',
-    },
-    notifText: {
-        color: '#9b4444',
-        fontSize: 16,
-        fontWeight: 'bold',
-        textAlign: 'center',
     },
 });

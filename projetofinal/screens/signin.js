@@ -3,7 +3,7 @@ import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../utils/controller';
 import { useState } from 'react';
-import { errorFirebase } from '../utils/authError';
+import { errorFirebase } from '../utils/notif';
 
 export default function SignIn({navigation}){
     const [email, setEmail] = useState("");
