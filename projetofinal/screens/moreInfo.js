@@ -41,8 +41,6 @@ export default function MoreInfo() {
       console.log('Produto já existe no carrinho:', item);
     }
   };
-  const { item } = route.params;
-  const insets = useSafeAreaInsets();
 
   return (
     <SafeAreaProvider>
