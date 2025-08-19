@@ -4,8 +4,8 @@ import { useRoute } from "@react-navigation/native";
 
 export default function MoreInfo() {
   const route = useRoute();
-  const insets = useSafeAreaInsets();
   const { item } = route.params;
+  const insets = useSafeAreaInsets();
 
   return (
     <SafeAreaProvider>
@@ -20,7 +20,7 @@ export default function MoreInfo() {
               </View>
               <Text style={styles.price}>R${Number(item.price).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
               <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.stock}>{item.quantity}</Text>
+              <Text style={styles.stock}>Em estoque: {item.quantity}</Text>
               <Text style={styles.description}>{item.description}</Text>
             </ScrollView>
           </View>
@@ -67,18 +67,19 @@ const styles = StyleSheet.create({
     color: '#6A7E4E',
     fontWeight: 'bold',
     fontSize: 25,
-    marginBottom: 10,
+    marginBottom: 8,
     paddingLeft: 5,
   },
   name: {
     fontWeight: 'bold',
-    fontSize: 19,
-    marginBottom: 10,
+    fontSize: 21,
+    marginBottom: 13,
     paddingLeft: 5,
   },
   description: {
     color: '#333',
     paddingLeft: 5,
+    fontSize: 15,
   },
   stock: {
     color: '#6a7e4e',

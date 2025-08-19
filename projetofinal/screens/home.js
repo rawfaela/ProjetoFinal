@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
     name: {
       fontSize: 14,
       textAlign: 'center',
+      paddingVertical: 3,
     },
     price: {
       fontSize: 16,
