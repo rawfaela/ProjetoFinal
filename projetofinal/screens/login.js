@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
-import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 import { auth } from '../utils/controller';

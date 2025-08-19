@@ -30,16 +30,16 @@ export default function Home(){
       <View style={[styles.container, Platform.OS === 'android' && { marginTop: StatusBar.currentHeight || 0 }]}>
         <View style={styles.searchContainer}>
           <TextInput
-          style={styles.input}
-          placeholder="Pesquisar..."
-          placeholderTextColor="#666"
-          value={search}
-          onChangeText={setSearch}
+            style={styles.input}
+            placeholder="Pesquisar..."
+            placeholderTextColor="#666"
+            value={search}
+            onChangeText={setSearch}
           />
           <Image source={require('../assets/lupinha.png')} style={styles.icon} />
         </View>
         
-        <FlatList data={products} renderItem={({item}) => (
+        <FlatList data={products.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))} renderItem={({item}) => (
           <View style={styles.background}>
             <TouchableOpacity style={styles.touchContainer} onPress={() => navigation.navigate('MoreInfo', {item})}>  
                 <Image source={{uri: item.image}} style={styles.img}></Image>
@@ -67,14 +67,16 @@ const styles = StyleSheet.create({
       borderRadius: 20,
       marginBottom: 20,
       height: 40,
+      paddingHorizontal: 10,
     },
     input: {
-      height: 40,
-      backgroundColor: '#fff',
-      borderRadius: 20,
-      paddingHorizontal: 15,
+      flex: 1,
       fontSize: 16,
-      marginBottom: 20,
+    },
+    icon: {
+      width: 20,
+      height: 20,
+      marginTop: 10
     },
     cardsContainer: {
       flexDirection: 'row',
@@ -101,15 +103,10 @@ const styles = StyleSheet.create({
     name: {
       fontSize: 14,
       textAlign: 'center',
+      paddingVertical: 3,
     },
     price: {
       fontSize: 16,
       fontWeight: 'bold'
-    },
-    icon: {
-      width: 20,
-      height: 20,
-      marginLeft: 190,
-      marginTop: 10
     },
 })

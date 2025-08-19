@@ -41,6 +41,8 @@ export default function MoreInfo() {
       console.log('Produto já existe no carrinho:', item);
     }
   };
+  const { item } = route.params;
+  const insets = useSafeAreaInsets();
 
   return (
     <SafeAreaProvider>
@@ -61,6 +63,7 @@ export default function MoreInfo() {
               </Text>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.stock}>Estoque: {item.quantity}</Text>
+              <Text style={styles.stock}>Em estoque: {item.quantity}</Text>
               <Text style={styles.description}>{item.description}</Text>
             </ScrollView>
           </View>
@@ -111,18 +114,19 @@ const styles = StyleSheet.create({
     color: '#6A7E4E',
     fontWeight: 'bold',
     fontSize: 25,
-    marginBottom: 10,
+    marginBottom: 8,
     paddingLeft: 5,
   },
   name: {
     fontWeight: 'bold',
-    fontSize: 19,
-    marginBottom: 10,
+    fontSize: 21,
+    marginBottom: 13,
     paddingLeft: 5,
   },
   description: {
     color: '#333',
     paddingLeft: 5,
+    fontSize: 15,
   },
   stock: {
     color: '#6a7e4e',
