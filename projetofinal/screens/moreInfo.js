@@ -1,11 +1,46 @@
+import React, { useEffect, useState } from 'react';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
-import { useRoute } from "@react-navigation/native";
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { useRoute, useNavigation } from "@react-navigation/native";
+import { useCart } from '../components/cartProvider';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../path-to-your-firebase-config'; // Ajuste o caminho conforme necessário
 
 export default function MoreInfo() {
   const route = useRoute();
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { item } = route.params;
+  const { addProduct } = useCart();
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'produtos'));
+        const list = [];
+        querySnapshot.forEach((doc) => {
+          list.push({ id: doc.id, ...doc.data() });
+        });
+        setProducts(list);
+      } catch (error) {
+        console.log("Erro ao buscar produtos:", error);
+      }
+    }
+    loadProducts();
+  }, []);
+
+  const handleAddToCart = () => {
+    const foiAdicionado = addProduct(item);
+    
+    if (foiAdicionado) {
+      Alert.alert('Sucesso!', 'Produto adicionado ao carrinho!');
+      console.log('Produto adicionado ao carrinho:', item);
+    } else {
+      Alert.alert('Atenção', 'Este produto já foi adicionado ao carrinho!');
+      console.log('Produto já existe no carrinho:', item);
+    }
+  };
 
   return (
     <SafeAreaProvider>
@@ -18,15 +53,24 @@ export default function MoreInfo() {
               <View style={styles.imageContainer}>
                 <Image source={{ uri: item.image }} style={styles.image} />
               </View>
-              <Text style={styles.price}>R${Number(item.price).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
+              <Text style={styles.price}>
+                R${Number(item.price).toLocaleString("pt-BR", { 
+                  minimumFractionDigits: 2, 
+                  maximumFractionDigits: 2 
+                })}
+              </Text>
               <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.stock}>{item.quantity}</Text>
+              <Text style={styles.stock}>Estoque: {item.quantity}</Text>
               <Text style={styles.description}>{item.description}</Text>
             </ScrollView>
           </View>
           
           <View style={[styles.addButtonContainer, { paddingBottom: insets.bottom }]}>
-            <TouchableOpacity style={styles.addButton}>
+            <TouchableOpacity 
+              style={styles.addButton}
+              onPress={handleAddToCart}
+              activeOpacity={0.8}
+            >
               <Text style={styles.addButtonText}>Adicionar ao Carrinho</Text>
             </TouchableOpacity>
           </View>
@@ -83,7 +127,8 @@ const styles = StyleSheet.create({
   stock: {
     color: '#6a7e4e',
     paddingLeft: 5,
-    paddingBottom: 10
+    paddingBottom: 10,
+    fontWeight: '600',
   },
   addButtonContainer: {
     position: 'absolute',
