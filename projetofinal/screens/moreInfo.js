@@ -16,10 +16,8 @@ export default function MoreInfo() {
     
     if (wasAdded) {
       showNotif('Produto adicionado ao carrinho!', 'success');
-      console.log('Produto adicionado ao carrinho:', item);
     } else {
       showNotif('Este produto já foi adicionado ao carrinho!', 'error');
-      console.log('Produto já existe no carrinho:', item);
     }
   };
 
