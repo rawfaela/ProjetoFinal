@@ -1,89 +1,61 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, StatusBar, FlatList } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useCart } from '../utils/cartProvider';
 
 export default function Cart() { 
+  const { cart } = useCart();
 
   return (
-    <SafeAreaView style={{flex:1, backgroundColor:'#eddaba'}}>
-      <View style={styles.container}>
-        <Text style={styles.title}>CARRINHO</Text>
-        <View style={styles.productcontainer}>
-          <Image
-            source={{ uri:'https://www.nutrire.ind.br/images/f69cb32b09206b60746c751f7d6f7b96.png' }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-          <View>
-            <Text style={styles.name}>Gatinho fofo</Text>
-            <Text style={styles.price}>R$30,99</Text>
-          </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={{flex:1}}>
+        <View style={styles.container}>
+          <Text style={styles.title}>CARRINHO</Text>
+          {cart.length === 0 ? (
+              <Text style={styles.empty}>Seu carrinho está vazio...</Text>
+            ) : (
+              <FlatList 
+                showsVerticalScrollIndicator={false} 
+                data={cart}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item}) => (
+                  <View style={styles.productcontainer}>
+                    <Image
+                      source={{ uri: item.image }}
+                      style={styles.image}
+                      resizeMode="cover"
+                    />
+                    <Text style={styles.name}>{item.name}</Text>
+                    <Text style={styles.price}>{item.price}</Text>
+                  </View>
+                )}
+              />
+            )}
+          
         </View>
-       <View style={styles.addButtonContainer}>
-          <TouchableOpacity 
-            style={styles.addButton}
-            onPress={() => navigation.navigate('')}
-            activeOpacity={0.8}
-          >
-          <Text style={styles.addButtonText}>Finalizar compra</Text>
-          </TouchableOpacity>
-      </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    alignSelf: 'center',
-    paddingVertical: 10
+    alignSelf: 'center'
   },
   productcontainer: {
-    backgroundColor: "#a9b388",
-    height: '15%',
-    flexDirection: 'row',      
-    alignItems: 'center',      
-    paddingHorizontal: 10,     
-    borderRadius: 10,           
-    margin: 10,                 
-  },
-  image:{
-    height: 85,
-    width: 85,
-    borderRadius: 8,            
-    marginRight: 10,            
+    backgroundColor: "#a9b388"
   },
   name: {
-    color: '#5f6f52',
-    fontSize: 18,
-    fontWeight: 'bold',
-
+    color: 'white'
   },
   price: {
-    fontSize: 19,
-    color: '#3b3b1a'
+    color: 'white'
   },
-  addButtonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#6A7E4E',
-    paddingTop: 10,
-    paddingBottom: 10
-  },
-  addButton: {
-    backgroundColor: '#6A7E4E',
-    paddingVertical: 18,
-    alignItems: 'center',
-  },
-  addButtonText: {
-    fontWeight: 'bold',
-    color: '#fff',
-    fontSize: 16,
+  image:{
+
   }
 });
