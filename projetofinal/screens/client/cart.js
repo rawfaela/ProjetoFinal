@@ -1,6 +1,6 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, StatusBar, FlatList } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { useCart } from '../utils/cartProvider';
+import { useCart } from '../../utils/cartProvider';
 
 export default function Cart() { 
   const { cart } = useCart();
