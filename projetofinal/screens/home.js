@@ -92,7 +92,8 @@ const styles = StyleSheet.create({
     },
     img: {
       width: '80%',
-      height: '70%',
+      height: '80%',
+      aspectRatio: 1,
       alignSelf: 'center',
       marginTop: 10
     },

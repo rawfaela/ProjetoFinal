@@ -54,5 +54,8 @@ const styles = StyleSheet.create({
   },
   price: {
     color: 'white'
+  },
+  image:{
+    
   }
 });
