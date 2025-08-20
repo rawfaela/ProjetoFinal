@@ -1,75 +1,63 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, StatusBar, FlatList } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useCart } from '../../utils/cartProvider';
-import { useState } from 'react';
 
 export default function Cart() { 
-  const { cart } = useCart();
-  const [counter, setCounter] = useState(1); // começa com 1 no carrinho
-  const [isVisible, setIsVisible] = useState(true);
-
-  function More() {
-    setCounter(counter + 1);
-  } 
-  function Less() {
-    if(counter > 1){
-      setCounter(counter - 1);
-    } else {
-      // se já tiver 0 → remove do carrinho
-      setIsVisible(false);
-    }
-  }
+const { cart, increase, decrease } = useCart();
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={{flex:1}}>
+      <SafeAreaView style={{flex:1, backgroundColor: '#eddaba'}}>
         <View style={styles.container}>
           <Text style={styles.title}>CARRINHO</Text>
           {cart.length === 0 ? (
-              <Text style={styles.empty}>Seu carrinho está vazio...</Text>
-            ) : (
-              <FlatList 
-                showsVerticalScrollIndicator={false} 
-                data={cart}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({item}) => (
-                  <View style={styles.productcontainer}>
-                    <Image
-                      source={{ uri: item.image }}
-                      style={styles.image}
-                      resizeMode="cover"
-                    />
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.name}>{item.name}</Text>
-                      <Text style={styles.price}>{item.price}</Text>
-                    </View>
-                    <View style={styles.counterContainer}>
-                        <TouchableOpacity style={styles.button} onPress={Less}>
-                          <Text style={styles.txtbutton}>-</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.counterText}>{counter}</Text>
-                        <TouchableOpacity style={styles.button} onPress={More}>
-                          <Text style={styles.txtbutton}>+</Text>
-                        </TouchableOpacity>
-                    </View>
+            <Text style={styles.empty}>Seu carrinho está vazio...</Text>
+          ) : (
+            <FlatList 
+              showsVerticalScrollIndicator={false} 
+              data={cart}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({item}) => (
+                <View style={styles.productcontainer}>
+                  <Image
+                    source={{ uri: item.image }}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.name}>{item.name}</Text>
+                    <Text style={styles.price}>
+                      R${(item.price * item.quantity).toFixed(2)}
+                    </Text>
                   </View>
-                )}
-              />
-              
-            )}
+                  <View style={styles.counterContainer}>
+                    <TouchableOpacity style={styles.button} onPress={() => decrease(item)}>
+                    <Text style={styles.txtbutton}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.counterText}>{item.quantity}</Text>
+                  <TouchableOpacity style={styles.button} onPress={() => increase(item)}>
+                    <Text style={styles.txtbutton}>+</Text>
+                  </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+            />
+          )}
+          
           <View style={styles.addButtonContainer}>
-          <TouchableOpacity 
-            style={styles.addButton}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.addButtonText}>Finalizar compra</Text>
-          </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.addButton}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.addButtonText}>Finalizar compra</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

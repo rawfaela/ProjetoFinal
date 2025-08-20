@@ -39,7 +39,6 @@ export default function MoreInfo() {
                 })}
               </Text>
               <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.stock}>Estoque: {item.quantity}</Text>
               <Text style={styles.stock}>Em estoque: {item.quantity}</Text>
               <Text style={styles.description}>{item.description}</Text>
             </ScrollView>

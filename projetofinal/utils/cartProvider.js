@@ -22,7 +22,11 @@ export function CartProvider({ children }) {
 
           if (docSnap.exists()) {
             const data = docSnap.data();
-            setCart(Array.isArray(data.products) ? data.products : []);
+            // Garante que cada item tem quantity
+            const products = Array.isArray(data.products) 
+              ? data.products.map(p => ({ ...p, quantity: p.quantity || 1 }))
+              : [];
+            setCart(products);
           } else {
             setCart([]);
           }
@@ -49,25 +53,44 @@ export function CartProvider({ children }) {
         const docRef = doc(db, 'cart', user.uid);
         await setDoc(docRef, { products: lista });
       } catch (error) {
-        console.log('erro ao salvar no firebase: ', error);
+        console.log('Erro ao salvar no firebase: ', error);
       }
     }
     saveCart(cart);
   }, [cart, user, loadingCart]);
 
   function addToCart(product) {
-    const alreadyInCart = cart.some((item) => item.id === product.id);
+    const alreadyInCart = cart.find((item) => item.id === product.id);
 
     if (alreadyInCart) {
       return false;
+    } else {
+      setCart((previous) => [...previous, { ...product, quantity: 1 }]);
+      return true;
     }
+  }
 
-    setCart((previous) => [...previous, product]);
-    return true;
+  function increase(item) {
+    const updatedCart = cart.map((p) =>
+      p.id === item.id ? { ...p, quantity: p.quantity + 1 } : p
+    );
+    setCart(updatedCart);
+  }
+
+  function decrease(item) {
+    if (item.quantity > 1) {
+      const updatedCart = cart.map((p) =>
+        p.id === item.id ? { ...p, quantity: p.quantity - 1 } : p
+      );
+      setCart(updatedCart);
+    } else {
+      const updatedCart = cart.filter((p) => p.id !== item.id);
+      setCart(updatedCart);
+    }
   }
 
   return (
-    <CartContext.Provider value={{ cart, addToCart }}>
+    <CartContext.Provider value={{ cart, addToCart, increase, decrease }}>
       {children}
     </CartContext.Provider>
   );
