@@ -1,12 +1,12 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function Stock() { 
+export default function Cart() { 
 
   return (
     <SafeAreaView style={{flex:1, backgroundColor:'#eddaba'}}>
       <View style={styles.container}>
-        <Text style={styles.title}>ESTOQUE</Text>
+        <Text style={styles.title}>CARRINHO</Text>
         <View style={styles.productcontainer}>
           <Image
             source={{ uri:'https://www.nutrire.ind.br/images/f69cb32b09206b60746c751f7d6f7b96.png' }}
