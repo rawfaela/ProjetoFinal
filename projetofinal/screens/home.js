@@ -91,11 +91,12 @@ const styles = StyleSheet.create({
       marginBottom: 20,
     },
     img: {
-      width: '80%',
-      height: '80%',
+      width: '70%',
+      height: '70%',
       aspectRatio: 1,
       alignSelf: 'center',
-      marginTop: 10
+      marginTop: 10,
+      borderRadius: 8,
     },
     touchContainer: {
       flex: 1,
