@@ -42,7 +42,8 @@ export default function Cart() {
                     <View style={{ flex: 1 }}>
                       <Text style={styles.name}>{item.name}</Text>
                       <Text style={styles.price}>{item.price}</Text>
-                      <View style={styles.counterContainer}>
+                    </View>
+                    <View style={styles.counterContainer}>
                         <TouchableOpacity style={styles.button} onPress={Less}>
                           <Text style={styles.txtbutton}>-</Text>
                         </TouchableOpacity>
@@ -50,7 +51,6 @@ export default function Cart() {
                         <TouchableOpacity style={styles.button} onPress={More}>
                           <Text style={styles.txtbutton}>+</Text>
                         </TouchableOpacity>
-                      </View>
                     </View>
                   </View>
                 )}
