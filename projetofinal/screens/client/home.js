@@ -1,6 +1,6 @@
 import { Text, View, StyleSheet, TextInput, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar, FlatList } from 'react-native';
 import { useEffect, useState } from 'react';
-import { db } from '../utils/controller';
+import { db } from '../../utils/controller';
 import { collection, getDocs } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 
@@ -36,7 +36,7 @@ export default function Home(){
             value={search}
             onChangeText={setSearch}
           />
-          <Image source={require('../assets/lupinha.png')} style={styles.icon} />
+          <Image source={require('../../assets/lupinha.png')} style={styles.icon} />
         </View>
         
         <FlatList data={products.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))} renderItem={({item}) => (

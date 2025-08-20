@@ -1,13 +1,14 @@
 import SignIn from './screens/signin';
 import LogIn from './screens/login';
-import Home from './screens/home';
-import Purchases from './screens/purchases';
-import Cart from './screens/cart';
-import AddProducts from './screens/addProducts';
+import Home from './screens/client/home';
+import Purchases from './screens/client/purchases';
+import Cart from './screens/client/cart';
+import AddProducts from './screens/adm/addProducts';
 import BottomTabs from './components/bottomtabs';
-import Stock from './screens/stock';
-import Orders from './screens/orders';
-import MoreInfo from './screens/moreInfo';
+import Stock from './screens/adm/stock';
+import Orders from './screens/adm/orders';
+import MoreInfo from './screens/client/moreInfo';
+import AdressStack from './screens/client/adress';
 import { CartProvider } from './utils/cartProvider';
 import { NotificationProvider } from './utils/notif';
 
@@ -43,6 +44,7 @@ export default function App() {
       <NotificationProvider>
         <NavigationContainer>
           <Stack.Navigator>
+            <Stack.Screen name='AdressStack' component={AdressStack} options={{headerShown: false}}/>
             
             <Stack.Screen name='LogIn' component={LogIn} options={{ headerShown: false }}/>
 
