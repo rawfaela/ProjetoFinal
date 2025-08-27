@@ -8,7 +8,7 @@ import BottomTabs from './components/bottomtabs';
 import Stock from './screens/adm/stock';
 import Orders from './screens/adm/orders';
 import MoreInfo from './screens/client/moreInfo';
-import AdressStack from './screens/client/adress';
+import AddressStack from './screens/client/address';
 import { CartProvider } from './utils/cartProvider';
 import { NotificationProvider } from './utils/notif';
 
@@ -54,8 +54,8 @@ export default function App() {
             <Stack.Screen name='TabsADM' component={TabsADM} options={{headerShown: false}}/>
       
             <Stack.Screen name='MoreInfo' component={MoreInfo} options={{headerShown: false}}/>
-            
-            <Stack.Screen name='AdressStack' component={AdressStack} options={{headerShown: false}}/>
+
+            <Stack.Screen name='AddressStack' component={AddressStack} options={{headerShown: false}}/>
 
           </Stack.Navigator>
         </NavigationContainer>

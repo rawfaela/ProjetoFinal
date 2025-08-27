@@ -55,7 +55,7 @@ export default function AddProducts(){
     return(
         <SafeAreaProvider>
             <SafeAreaView style={styles.container}>
-                <Text style={styles.title}>Adicionar Produto</Text>
+                <Text style={styles.title}>ADICIONAR PRODUTO</Text>
                 <View style={styles.formContainer}>
                     <TextInput 
                         style={styles.input} 
