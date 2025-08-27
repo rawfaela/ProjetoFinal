@@ -44,7 +44,6 @@ export default function App() {
       <NotificationProvider>
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen name='AdressStack' component={AdressStack} options={{headerShown: false}}/>
             
             <Stack.Screen name='LogIn' component={LogIn} options={{ headerShown: false }}/>
 
@@ -55,6 +54,8 @@ export default function App() {
             <Stack.Screen name='TabsADM' component={TabsADM} options={{headerShown: false}}/>
       
             <Stack.Screen name='MoreInfo' component={MoreInfo} options={{headerShown: false}}/>
+            
+            <Stack.Screen name='AdressStack' component={AdressStack} options={{headerShown: false}}/>
 
           </Stack.Navigator>
         </NavigationContainer>

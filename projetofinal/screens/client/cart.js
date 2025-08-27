@@ -1,8 +1,11 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, StatusBar, FlatList } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useCart } from '../../utils/cartProvider';
+import AdressStack from './adress';
 
-export default function Cart() { 
+//!! mudar navigate do onpress
+
+export default function Cart({navigation}) { 
 const { cart, increase, decrease } = useCart();
 
   return (
@@ -49,7 +52,7 @@ const { cart, increase, decrease } = useCart();
               style={styles.addButton}
               activeOpacity={0.8}
             >
-              <Text style={styles.addButtonText}>Finalizar compra</Text>
+              <Text style={styles.addButtonText} onPress={() => navigation.navigate(AdressStack)}>Finalizar compra</Text> {/* nao vai vir pra ca direto, só to testando */}
             </TouchableOpacity>
           </View>
         </View>
