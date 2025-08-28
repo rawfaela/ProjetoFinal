@@ -10,8 +10,6 @@ import { useNotification } from '../../utils/notif';
 
 const Stack = createStackNavigator();
 
-//! botar keyboard type nos inputs
-
 export default function AddressStack() {
   return (
     <Stack.Navigator>
@@ -110,8 +108,41 @@ function EditAddress({ route, navigation }) {
   const [cep, setCep] = useState(address?.cep || "");
   const [neighborhood, setNeighborhood] = useState(address?.neighborhood || "")
 
+  const formatPhone = (text) => {
+    const cleaned = text.replace(/\D/g, "");
+
+    if (cleaned.length === 0) return "";
+
+    let formatted = "";
+
+    if (cleaned.length <= 2) {
+      formatted = `(${cleaned}`;
+    } else if (cleaned.length <= 6) {
+      formatted = `(${cleaned.substring(0, 2)}) ${cleaned.substring(2)}`;
+    } else if (cleaned.length <= 10) {
+      formatted = `(${cleaned.substring(0, 2)}) ${cleaned.substring(2, 6)}-${cleaned.substring(6)}`;
+    } else {
+      formatted = `(${cleaned.substring(0, 2)}) ${cleaned.substring(2, 7)}-${cleaned.substring(7, 11)}`;
+    }
+
+    return formatted;
+  };
+
+  const formatCep = (text) => {
+    const cleaned = text.replace(/\D/g, "");
+    if (cleaned.length === 0) return "";
+    if (cleaned.length <= 5) return cleaned;
+    return cleaned.substring(0, 5) + "-" + cleaned.substring(5, 8);
+  };
+
   async function handleSave() {
     if (!user) return;
+
+    if (!name || !phone || !street || !number || !city || !state || !cep || !neighborhood) {
+      showNotif("Preencha todos os campos!", "error");
+      return;
+    }
+
     const ref = collection(db, "addresses", user.uid, "userAddresses");
 
     if (address) {
@@ -128,13 +159,14 @@ function EditAddress({ route, navigation }) {
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor: "#eddaba" }}> 
         <View style={{ flex: 1, padding: 20 }}>
+          
           <TextInput value={name} onChangeText={setName} style={styles.input} placeholder="Nome completo"/>
 
-          <TextInput value={phone} onChangeText={setPhone} style={styles.input} placeholder="Número de telefone"/>
+          <TextInput value={phone}  onChangeText={(text) => setPhone(formatPhone(text))} style={styles.input} placeholder="Número de telefone" keyboardType="number-pad" maxLength={15}/>
 
-          <TextInput value={cep} onChangeText={setCep} style={styles.input} placeholder="CEP"/>
+          <TextInput value={cep} onChangeText={(text) => setCep(formatCep(text))} style={styles.input} placeholder="CEP" keyboardType="number-pad" maxLength={9}/>
 
-          <TextInput value={state} onChangeText={setState} style={styles.input} placeholder="Estado"/>
+          <TextInput value={state} onChangeText={(text) => setState(text.toUpperCase())} style={styles.input} placeholder="Estado" maxLength={2}/>
 
           <TextInput value={city} onChangeText={setCity} style={styles.input} placeholder="Cidade"/>
 
@@ -142,18 +174,14 @@ function EditAddress({ route, navigation }) {
 
           <TextInput value={street} onChangeText={setStreet} style={styles.input} placeholder="Nome da rua"/>
 
-          <TextInput value={number} onChangeText={setNumber} style={styles.input} placeholder="Número"/>
-
-
-
-
-
+          <TextInput value={number} onChangeText={setNumber} style={styles.input} placeholder="Número" keyboardType="number-pad"/>
 
           <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
             <Text style={styles.saveText}>
               {address ? "Salvar alterações" : "Adicionar endereço"}
             </Text>
           </TouchableOpacity>
+
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
