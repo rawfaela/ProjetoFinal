@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { db, auth } from '../utils/controller';
+import { db, auth } from './controller';
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
 const CartContext = createContext();

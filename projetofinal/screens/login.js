@@ -2,8 +2,8 @@ import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image } from 'reac
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
-import { auth } from '../utils/controller';
-import { errorFirebase } from '../utils/notif';
+import { auth } from '../components/controller';
+import { errorFirebase } from '../components/notif';
 
 export default function LogIn({navigation}){
     const [email, setEmail] = useState("");

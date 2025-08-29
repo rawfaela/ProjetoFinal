@@ -1,6 +1,6 @@
 import { Text, View, StyleSheet, TextInput, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar, FlatList } from 'react-native';
 import { useEffect, useState } from 'react';
-import { db } from '../../utils/controller';
+import { db } from '../../components/controller';
 import { collection, getDocs } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 

@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
-import { db } from "../../utils/controller";
+import { db } from "../../components/controller";
 import { collection, onSnapshot, doc, setDoc, addDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { useNotification } from '../../utils/notif';
+import { useNotification } from '../../components/notif';
 
 const Stack = createStackNavigator();
 

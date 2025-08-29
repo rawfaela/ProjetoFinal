@@ -1,8 +1,8 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRoute } from "@react-navigation/native";
-import { useCart } from '../../utils/cartProvider';
-import { useNotification } from '../../utils/notif';
+import { useCart } from '../../components/cartProvider';
+import { useNotification } from '../../components/notif';
 
 export default function MoreInfo() {
   const route = useRoute();

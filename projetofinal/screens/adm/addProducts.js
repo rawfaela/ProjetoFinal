@@ -1,9 +1,9 @@
 import {Text, View, StyleSheet, TouchableOpacity, TextInput, Animated, Image} from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
-import { db } from '../../utils/controller';
+import { db } from '../../components/controller';
 import { collection, addDoc } from 'firebase/firestore';
-import { useNotification } from '../../utils/notif';
+import { useNotification } from '../../components/notif';
 
 export default function AddProducts(){
     const [name, setName] = useState('');

@@ -9,8 +9,8 @@ import Stock from './screens/adm/stock';
 import Orders from './screens/adm/orders';
 import MoreInfo from './screens/client/moreInfo';
 import AddressStack from './screens/client/address';
-import { CartProvider } from './utils/cartProvider';
-import { NotificationProvider } from './utils/notif';
+import { CartProvider } from './components/cartProvider';
+import { NotificationProvider } from './components/notif';
 
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
