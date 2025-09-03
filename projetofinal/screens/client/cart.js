@@ -149,5 +149,10 @@ const styles = StyleSheet.create({
     fontSize:18,
     fontWeight:'bold',
     color:'#fff'
+  },
+  empty: {
+    textAlign: 'center',
+    fontSize: 20,
+    color: '#603d1a'
   }
 });
