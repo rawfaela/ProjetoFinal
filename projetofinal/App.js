@@ -10,6 +10,7 @@ import Stock from './screens/adm/stock';
 import Orders from './screens/adm/orders';
 import MoreInfo from './screens/client/moreInfo';
 import AddressStack from './screens/client/address';
+import FinishPurchase from './screens/client/finishPurchase';
 import { CartProvider } from './components/cartProvider';
 import { NotificationProvider } from './components/notif';
 import { NavigationContainer } from '@react-navigation/native';
@@ -56,6 +57,8 @@ export default function App() {
 
             <Stack.Screen name='AddressStack' component={AddressStack} options={{headerShown: false}}/>
 
+            <Stack.Screen name='FinishPurchase'component={FinishPurchase}/>
+            
           </Stack.Navigator>
         </NavigationContainer>
       </NotificationProvider>

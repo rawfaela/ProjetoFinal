@@ -28,7 +28,7 @@ export default function FinishPurchase(item, { navigation }) {
           <View style={styles.button}>
             <TouchableOpacity
             style={{flex:1, justifyContent: 'center', alignItems:'center'}} 
-              onPress={() => navigation.navigate("Finalizar")}>
+              onPress={() => navigation.navigate("Finalizar")}> {/* acho q ta erado */}
               <Text style={styles.buyButtonText}>Comprar</Text>
             </TouchableOpacity>
           </View>

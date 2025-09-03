@@ -1,9 +1,8 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, StatusBar, FlatList } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useCart } from '../../components/cartProvider';
-import AddressStack from './address';
 import { Ionicons } from '@expo/vector-icons'; // biblioteca de ícones
-
+import FinishPurchase from './finishPurchase';
 //!! mudar navigate do onpress
 
 export default function Cart({navigation}) { 
@@ -55,7 +54,7 @@ const { cart, increase, decrease, remove } = useCart();
             <View style={styles.addButtonContainer}>
               <TouchableOpacity 
                 style={styles.addButton}
-                onPress={() => navigation.navigate(AddressStack)} 
+                onPress={() => navigation.navigate(FinishPurchase(item))} /* dando erro */
               > 
                 <Text style={styles.addButtonText}>Finalizar compra</Text>
               </TouchableOpacity> 
