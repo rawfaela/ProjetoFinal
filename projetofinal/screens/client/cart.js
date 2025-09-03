@@ -2,11 +2,12 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, StatusBar, F
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useCart } from '../../components/cartProvider';
 import AddressStack from './address';
+import { Ionicons } from '@expo/vector-icons'; // biblioteca de ícones
 
 //!! mudar navigate do onpress
 
 export default function Cart({navigation}) { 
-const { cart, increase, decrease } = useCart();
+const { cart, increase, decrease, remove } = useCart();
 
   return (
     <SafeAreaProvider>
@@ -40,6 +41,10 @@ const { cart, increase, decrease } = useCart();
                   <Text style={styles.counterText}>{item.quantity}</Text>
                   <TouchableOpacity style={styles.button} onPress={() => increase(item)}>
                     <Text style={styles.txtbutton}>+</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity onPress={() => remove(item)}>
+                    <Ionicons name="trash" size={24} color="#b22222" />
                   </TouchableOpacity>
                   </View>
                 </View>

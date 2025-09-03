@@ -89,8 +89,13 @@ export function CartProvider({ children }) {
     }
   }
 
+  function remove(item){
+    const updatedCart = cart.filter((p) => p.id !== item.id);
+    setCart(updatedCart);
+  }
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, increase, decrease }}>
+    <CartContext.Provider value={{ cart, addToCart, increase, decrease, remove }}>
       {children}
     </CartContext.Provider>
   );
