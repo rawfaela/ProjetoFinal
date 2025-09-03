@@ -87,7 +87,7 @@ export function useNotification() {
 const styles = StyleSheet.create({
   notif: {
     position: 'absolute',
-    bottom: 100,
+    top: 100,
     alignSelf: 'center',
     padding: 15,
     borderRadius: 10,
