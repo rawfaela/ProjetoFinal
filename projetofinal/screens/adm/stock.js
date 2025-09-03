@@ -18,15 +18,6 @@ export default function Stock() {
             <Text style={styles.price}>R$30,99</Text>
           </View>
         </View>
-       <View style={styles.addButtonContainer}>
-          <TouchableOpacity 
-            style={styles.addButton}
-            onPress={() => navigation.navigate('')}
-            activeOpacity={0.8}
-          >
-          <Text style={styles.addButtonText}>Finalizar compra</Text>
-          </TouchableOpacity>
-      </View>
       </View>
     </SafeAreaView>
   );

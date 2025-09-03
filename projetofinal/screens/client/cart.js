@@ -51,15 +51,17 @@ const { cart, increase, decrease, remove } = useCart();
               )}
             />
           )}
+          {cart.length > 0 && (
+            <View style={styles.addButtonContainer}>
+              <TouchableOpacity 
+                style={styles.addButton}
+                onPress={() => navigation.navigate(AddressStack)} 
+              > 
+                <Text style={styles.addButtonText}>Finalizar compra</Text>
+              </TouchableOpacity> 
+            </View>
+          )}
           
-          <View style={styles.addButtonContainer}>
-            <TouchableOpacity 
-              style={styles.addButton}
-              onPress={() => navigation.navigate(AddressStack)} 
-            > {/* nao vai vir pra ca direto, só to testando */}
-              <Text style={styles.addButtonText}>Finalizar compra</Text>
-            </TouchableOpacity> 
-          </View>
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
