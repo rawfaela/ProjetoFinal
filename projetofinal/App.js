@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import SignIn from './screens/signin';
 import LogIn from './screens/login';
 import Home from './screens/client/home';
@@ -11,8 +12,6 @@ import MoreInfo from './screens/client/moreInfo';
 import AddressStack from './screens/client/address';
 import { CartProvider } from './components/cartProvider';
 import { NotificationProvider } from './components/notif';
-
-import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { FontAwesome5, Fontisto, FontAwesome6, FontAwesome } from '@expo/vector-icons';
