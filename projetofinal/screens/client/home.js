@@ -91,8 +91,8 @@ const styles = StyleSheet.create({
       marginBottom: 20,
     },
     img: {
-      width: '70%',
-      height: '70%',
+      width: '65%',
+      height: '65%',
       aspectRatio: 1,
       alignSelf: 'center',
       marginTop: 10,
@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
       paddingVertical: 3,
     },
     price: {
+      textAlign: 'center',
       fontSize: 16,
       fontWeight: 'bold'
     },
