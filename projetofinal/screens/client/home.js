@@ -1,4 +1,5 @@
-import { Text, View, StyleSheet, TextInput, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar, FlatList } from 'react-native';
+import { Text, View, StyleSheet, TextInput, Image, TouchableOpacity, Platform, StatusBar, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 import { db } from '../../components/controller';
 import { collection, getDocs } from "firebase/firestore";

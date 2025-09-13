@@ -1,4 +1,4 @@
-import {Text, View, StyleSheet, TouchableOpacity, TextInput, Animated, Image} from 'react-native'
+import {Text, View, StyleSheet, TouchableOpacity, TextInput, Image} from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { db } from '../../components/controller';

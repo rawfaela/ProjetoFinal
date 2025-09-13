@@ -1,7 +1,7 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, StatusBar, FlatList } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useCart } from '../../components/cartProvider';
-import { Ionicons } from '@expo/vector-icons'; // biblioteca de ícones
+import { Ionicons } from '@expo/vector-icons';
 import FinishPurchase from './finishPurchase';
 //!! mudar navigate do onpress
 
