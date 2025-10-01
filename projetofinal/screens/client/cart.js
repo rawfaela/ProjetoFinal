@@ -42,7 +42,6 @@ const { cart, increase, decrease, remove } = useCart();
                   <TouchableOpacity style={styles.button} onPress={() => increase(item)}>
                     <Text style={styles.txtbutton}>+</Text>
                   </TouchableOpacity>
-
                   <TouchableOpacity onPress={() => remove(item)}>
                     <Ionicons name="trash" size={24} color="#b22222" />
                   </TouchableOpacity>

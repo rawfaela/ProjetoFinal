@@ -1,25 +1,54 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function Stock() { 
+export default function Stock() {
+  const [quantity, setQuantity] = useState(0);
+  const increase = () => setQuantity(prev => prev + 1);
+  const decrease = () => setQuantity(prev => (prev > 0 ? prev - 1 : 0));
+
+  const handleChange = (text) => {
+    const num = parseInt(text, 10);
+    if (!isNaN(num) && num >= 0) {
+      setQuantity(num);
+    } else if (text === "") {
+      setQuantity(0);
+    }
+  };
 
   return (
-    <SafeAreaView style={{flex:1, backgroundColor:'#eddaba'}}>
-      <View style={styles.container}>
-        <Text style={styles.title}>ESTOQUE</Text>
-        <View style={styles.productcontainer}>
-          <Image
-            source={{ uri:'https://www.nutrire.ind.br/images/f69cb32b09206b60746c751f7d6f7b96.png' }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-          <View>
-            <Text style={styles.name}>Gatinho fofo</Text>
-            <Text style={styles.price}>R$30,99</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#eddaba' }}>
+        <View style={styles.container}>
+          <Text style={styles.title}>ESTOQUE</Text>
+          <View style={styles.productcontainer}>
+            <Image
+              source={{ uri: 'https://www.nutrire.ind.br/images/f69cb32b09206b60746c751f7d6f7b96.png' }}
+              style={styles.image}
+              resizeMode="cover"
+            />
+            <View>
+              <Text style={styles.name}>Gatinho fofo</Text>
+              <Text style={styles.price}>R$30,99</Text>
+            </View>
+            <View style={styles.counterContainer}>
+              <TouchableOpacity style={styles.button} onPress={decrease}>
+                <Text style={styles.txtbutton}>-</Text>
+              </TouchableOpacity>
+              <TextInput
+                style={styles.counterInput}
+                keyboardType="numeric"
+                value={quantity.toString()}
+                onChangeText={handleChange}
+              />
+              <TouchableOpacity style={styles.button} onPress={increase}>
+                <Text style={styles.txtbutton}>+</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -36,45 +65,59 @@ const styles = StyleSheet.create({
   productcontainer: {
     backgroundColor: "#a9b388",
     height: '15%',
-    flexDirection: 'row',      
-    alignItems: 'center',      
-    paddingHorizontal: 10,     
-    borderRadius: 10,           
-    margin: 10,                 
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    margin: 10,
   },
-  image:{
+  image: {
     height: 85,
     width: 85,
-    borderRadius: 8,            
-    marginRight: 10,            
+    borderRadius: 8,
+    marginRight: 10,
   },
   name: {
     color: '#5f6f52',
     fontSize: 18,
     fontWeight: 'bold',
-
   },
   price: {
     fontSize: 19,
     color: '#3b3b1a'
   },
-  addButtonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#6A7E4E',
-    paddingTop: 10,
-    paddingBottom: 10
-  },
-  addButton: {
-    backgroundColor: '#6A7E4E',
-    paddingVertical: 18,
+  counterContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 10,
+    paddingLeft: 20
   },
-  addButtonText: {
+  button: {
+    backgroundColor: '#5f6f52',
+    height: 30,
+    width: 30,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  txtbutton: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold'
+  },
+  counterInput: {
+    backgroundColor: '#a9b388',
+    width: 50,
+    height: 40,
+    textAlign: 'center',
+    padding: 0,
+    borderRadius: 8,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
-    fontSize: 16,
+    color: '#3b3b1a',
+    borderWidth: 1,
+    borderColor: '#5f6f52',
+    ...(Platform.OS === 'android' ? { textAlignVertical: 'center' } : {})
   }
 });
