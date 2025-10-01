@@ -31,7 +31,7 @@ export default function LogIn({navigation}){
             <View style={styles.container}>
                 <Image source={require('../assets/nome.png')}
                 style={{ width: '100%', height: 80, marginTop: 20}}/>
-                <Image source={require('../assets/logo.png')}
+                <Image source={require('../assets/icon.png')}
                 style={{ width: 150, height: 150}}/>
                 <Text style={styles.title2}>LOGIN</Text>
                 <View style={{rowGap: 20, width: '100%', alignItems:'center'}}>

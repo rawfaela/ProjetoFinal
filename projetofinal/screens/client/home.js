@@ -27,7 +27,7 @@ export default function Home(){
   }, []);
 
   return(
-    <SafeAreaView style={{flex: 1, backgroundColor: '#eddaba'}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#eddaba'}} edges={['top', 'left', 'right']}>
       <View style={[styles.container, Platform.OS === 'android' && { marginTop: StatusBar.currentHeight || 0 }]}>
         <View style={styles.searchContainer}>
           <TextInput

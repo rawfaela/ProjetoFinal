@@ -17,6 +17,7 @@ const { cart, increase, decrease, remove } = useCart();
             <Text style={styles.empty}>Seu carrinho está vazio...</Text>
           ) : (
             <FlatList 
+              contentContainerStyle={{ paddingBottom: 70 }}
               showsVerticalScrollIndicator={false} 
               data={cart}
               keyExtractor={(item) => item.id.toString()}
@@ -54,7 +55,7 @@ const { cart, increase, decrease, remove } = useCart();
             <View style={styles.addButtonContainer}>
               <TouchableOpacity 
                 style={styles.addButton}
-                onPress={() => navigation.navigate(FinishPurchase(item))} /* dando erro */
+                onPress={() => navigation.navigate('FinishPurchase')} /* dando erro */
               > 
                 <Text style={styles.addButtonText}>Finalizar compra</Text>
               </TouchableOpacity> 
@@ -114,7 +115,8 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: '#6A7E4E',
     paddingTop: 10,
-    paddingBottom: 10
+    paddingBottom: 10,
+    zIndex: 10,
   },
   addButton: {
     backgroundColor: '#6A7E4E',

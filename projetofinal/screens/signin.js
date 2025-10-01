@@ -28,7 +28,7 @@ export default function SignIn({navigation}){
 
               <Image source={require('../assets/nome.png')}
               style={{ width: '100%', height: 80, marginTop: 20}}/>
-              <Image source={require('../assets/logo.png')}
+              <Image source={require('../assets/icon.png')}
               style={{ width: 150, height: 150}}/>
                 <Text style={styles.title2}>CADASTRO</Text>
                 
