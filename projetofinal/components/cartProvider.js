@@ -14,7 +14,7 @@ export function CartProvider({ children }) {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       setLoadingCart(true);
-
+      
       if (user) {
         try {
           const docRef = doc(db, 'cart', user.uid);
