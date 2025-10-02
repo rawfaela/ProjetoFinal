@@ -7,6 +7,7 @@ import { db } from "../../components/controller";
 import { collection, onSnapshot, doc, setDoc, addDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useNotification } from '../../components/notif';
+import { useRoute } from "@react-navigation/native";
 
 const Stack = createStackNavigator();
 
@@ -36,6 +37,7 @@ function AddressList() {
   const navigation = useNavigation();
   const [addresses, setAddresses] = useState([]);
   const [selected, setSelected] = useState(null);
+  const route = useRoute();
 
   useEffect(() => {
     const user = getAuth().currentUser;
@@ -62,7 +64,17 @@ function AddressList() {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
-            onPress={() => setSelected(item.id)}
+            onPress={async () => {
+              const user = getAuth().currentUser;
+              if (!user) return;
+
+              await setDoc(doc(db, "users", user.uid), {
+                selectedAddressId: item.id,
+              }, { merge: true });
+
+              route.params?.onSelect(item);
+              navigation.goBack();
+            }}
           >
             <View style={styles.row}>
               <View style={styles.radio}>
@@ -71,7 +83,7 @@ function AddressList() {
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.phone}>{item.phone}</Text>
             </View>
-            <Text style={styles.address}>{item.street}, {item.number}</Text>
+            <Text style={styles.address}>{item.street}, {item.number}, {item.neighborhood}</Text>
             <Text style={styles.address}>{item.city}, {item.state}, {item.cep}</Text>
             <TouchableOpacity
               style={styles.editButton}
@@ -106,7 +118,7 @@ function EditAddress({ route, navigation }) {
   const [city, setCity] = useState(address?.city || "");
   const [state, setState] = useState(address?.state || "");
   const [cep, setCep] = useState(address?.cep || "");
-  const [neighborhood, setNeighborhood] = useState(address?.neighborhood || "")
+  const [neighborhood, setNeighborhood] = useState(address?.neighborhood || "");
 
   const formatPhone = (text) => {
     const cleaned = text.replace(/\D/g, "");
@@ -145,14 +157,37 @@ function EditAddress({ route, navigation }) {
 
     const ref = collection(db, "addresses", user.uid, "userAddresses");
 
-    if (address) {
-      await setDoc(doc(ref, address.id), { name, phone, street, number, city, state, cep });
-    } else {
-      await addDoc(ref, { name, phone, street, number, city, state, cep });
-    }
+    try {
+      if (address) {
+        await setDoc(doc(ref, address.id), { 
+          name, 
+          phone, 
+          street, 
+          number, 
+          city, 
+          state, 
+          cep, 
+          neighborhood 
+        });
+      } else {
+        await addDoc(ref, { 
+          name, 
+          phone, 
+          street, 
+          number, 
+          city, 
+          state, 
+          cep, 
+          neighborhood 
+        });
+      }
 
-    navigation.goBack();
-    showNotif('Endereço salvo com sucesso!', 'success');
+      showNotif('Endereço salvo com sucesso!', 'success');
+      navigation.goBack();
+    } catch (error) {
+      showNotif('Erro ao salvar endereço', 'error');
+      console.error(error);
+    }
   }
 
   return (
@@ -160,21 +195,67 @@ function EditAddress({ route, navigation }) {
       <SafeAreaView style={{ flex: 1, backgroundColor: "#eddaba" }}> 
         <View style={{ flex: 1, padding: 20 }}>
           
-          <TextInput value={name} onChangeText={setName} style={styles.input} placeholder="Nome completo"/>
+          <TextInput 
+            value={name} 
+            onChangeText={setName} 
+            style={styles.input} 
+            placeholder="Nome completo"
+          />
 
-          <TextInput value={phone}  onChangeText={(text) => setPhone(formatPhone(text))} style={styles.input} placeholder="Número de telefone" keyboardType="number-pad" maxLength={15}/>
+          <TextInput 
+            value={phone}  
+            onChangeText={(text) => setPhone(formatPhone(text))} 
+            style={styles.input} 
+            placeholder="Número de telefone" 
+            keyboardType="number-pad" 
+            maxLength={15}
+          />
 
-          <TextInput value={cep} onChangeText={(text) => setCep(formatCep(text))} style={styles.input} placeholder="CEP" keyboardType="number-pad" maxLength={9}/>
+          <TextInput 
+            value={cep} 
+            onChangeText={(text) => setCep(formatCep(text))} 
+            style={styles.input} 
+            placeholder="CEP" 
+            keyboardType="number-pad" 
+            maxLength={9}
+          />
 
-          <TextInput value={state} onChangeText={(text) => setState(text.toUpperCase())} style={styles.input} placeholder="Estado" maxLength={2}/>
+          <TextInput 
+            value={state} 
+            onChangeText={(text) => setState(text.toUpperCase())} 
+            style={styles.input} 
+            placeholder="Estado" 
+            maxLength={2}
+          />
 
-          <TextInput value={city} onChangeText={setCity} style={styles.input} placeholder="Cidade"/>
+          <TextInput 
+            value={city} 
+            onChangeText={setCity} 
+            style={styles.input} 
+            placeholder="Cidade"
+          />
 
-          <TextInput value={neighborhood} onChangeText={setNeighborhood} style={styles.input} placeholder="Bairro"/>
+          <TextInput 
+            value={neighborhood} 
+            onChangeText={setNeighborhood} 
+            style={styles.input} 
+            placeholder="Bairro"
+          />
 
-          <TextInput value={street} onChangeText={setStreet} style={styles.input} placeholder="Nome da rua"/>
+          <TextInput 
+            value={street} 
+            onChangeText={setStreet} 
+            style={styles.input} 
+            placeholder="Nome da rua"
+          />
 
-          <TextInput value={number} onChangeText={setNumber} style={styles.input} placeholder="Número" keyboardType="number-pad"/>
+          <TextInput 
+            value={number} 
+            onChangeText={setNumber} 
+            style={styles.input} 
+            placeholder="Número" 
+            keyboardType="number-pad"
+          />
 
           <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
             <Text style={styles.saveText}>

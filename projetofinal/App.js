@@ -55,9 +55,9 @@ export default function App() {
       
             <Stack.Screen name='MoreInfo' component={MoreInfo} options={{headerShown: false}}/>
 
-            <Stack.Screen name='AddressStack' component={AddressStack} options={{headerShown: false}}/>
+            <Stack.Screen name='FinishPurchase'component={FinishPurchase} options={{headerShown: false}}/>
 
-            <Stack.Screen name='FinishPurchase'component={FinishPurchase}/>
+            <Stack.Screen name='AddressStack' component={AddressStack} options={{headerShown: false}}/>
             
           </Stack.Navigator>
         </NavigationContainer>
