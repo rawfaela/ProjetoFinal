@@ -169,7 +169,6 @@ export default function Orders(){
           <Text style={styles.title}>PEDIDOS</Text>
                 <View style={styles.productcontainer}>
                   <Image
-                    
                     style={styles.image}
                     resizeMode="cover"
                   />
@@ -179,7 +178,6 @@ export default function Orders(){
                       R$preco.
                     </Text>
                     <Text style={styles.quantity}>Quantidade: {}</Text>
-
                   </View>
                   <View style={styles.checkContainer}>
                     <TouchableOpacity onPress={() => accept(item)}>
@@ -196,7 +194,6 @@ export default function Orders(){
     </SafeAreaProvider>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
