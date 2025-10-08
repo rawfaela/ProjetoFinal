@@ -29,7 +29,7 @@ const { cart, increase, decrease, remove } = useCart();
                   <View style={{ flex: 1 }}>
                     <Text style={styles.name}>{item.name}</Text>
                     <Text style={styles.price}>
-                      R${(item.price * item.quantity).toFixed(2)}
+                      R${Number(item.price * item.quantity).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </Text>
                   </View>
                   <View style={styles.counterContainer}>

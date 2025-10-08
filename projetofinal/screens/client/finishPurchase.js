@@ -1,18 +1,24 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from "react-native";
 import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FlatList } from "react-native-gesture-handler";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useNotification } from "../../components/notif";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc, addDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../../components/controller";
+import { useCart } from "../../components/cartProvider";
 
 export default function FinishPurchase({navigation, route}) {
   const { showNotif } = useNotification();
   const { cart } = route.params;
-  const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const { clearCart } = useCart();
+  const baseTotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [selectedDelivery, setSelectedDelivery] = useState(null);
+
+  const freight = selectedDelivery === 'motoboy' ? 15 : 0;
+  const displayTotal = baseTotal + freight;
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -24,19 +30,45 @@ export default function FinishPurchase({navigation, route}) {
     return unsubscribe;
   }, [navigation, route.params]);
 
-  const handlePurchase = () => {
-    if (!selectedAddress) {
+  const handlePurchase = async () => {
+    if (selectedDelivery === 'motoboy' && !selectedAddress) {
       showNotif('Por favor, selecione um endereço de entrega!', 'error');
       return;
     }
-    
-    //adicionar a lógica de finalização da compra
-    showNotif('Compra realizada com sucesso!', 'success');
+    if (!selectedDelivery) {
+      showNotif('Por favor, selecione um método de entrega!', 'error');
+      return;
+    }
+
+    const user = getAuth().currentUser ;
+    if (!user) {
+      showNotif('Usuário não autenticado. Faça login novamente.', 'error');
+      return;
+    }
+
+    const ref = collection(db, "purchases", user.uid, "userPurchases");
+
+    try {
+      await addDoc(ref, {
+        items: cart,
+        total: displayTotal,
+        deliveryMethod: selectedDelivery,
+        timestamp: new Date(),
+        ...(selectedDelivery === 'motoboy' && { address: selectedAddress }),
+        situation: 'Em análise'
+      });
+      showNotif('Compra realizada com sucesso!', 'success');
+      clearCart();
+      navigation.navigate('TabsClient',{screen:'Home'});
+    } catch (error) {
+      showNotif('Erro ao registrar compra. Tente novamente.', 'error');
+      console.error(error);
+    }
   };
 
   useEffect(() => {
     const fetchSelectedAddress = async () => {
-      const user = getAuth().currentUser;
+      const user = getAuth().currentUser ;
       if (!user) return;
 
       const userDoc = await getDoc(doc(db, "users", user.uid));
@@ -54,94 +86,125 @@ export default function FinishPurchase({navigation, route}) {
     fetchSelectedAddress();
   }, []);
 
+  const showAddressSection = selectedDelivery === 'motoboy';
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#eddaba' }}>
-      <View style={styles.container}>        
-        <TouchableOpacity
-          style={styles.addressContainer}
-          onPress={() => {
-            navigation.navigate("AddressStack", {
-              screen: "Address",
-              params: {
-                onSelect: async (addr) => {
-                  setSelectedAddress(addr);
-                  const user = getAuth().currentUser;
-                  if (user) {
-                    await setDoc(doc(db, "users", user.uid), {
-                      selectedAddressId: addr.id,
-                    }, { merge: true });
+      <View style={styles.container}>   
+        <ScrollView>     
+          {showAddressSection && (
+            <TouchableOpacity
+              style={styles.addressContainer}
+              onPress={() => {
+                navigation.navigate("AddressStack", {
+                  screen: "Address",
+                  params: {
+                    onSelect: async (addr) => {
+                      setSelectedAddress(addr);
+                      const user = getAuth().currentUser ;
+                      if (user) {
+                        await setDoc(doc(db, "users", user.uid), {
+                          selectedAddressId: addr.id,
+                        }, { merge: true });
+                      }
+                    },
                   }
-                },
-              }
-            });
-          }}
-        >
-          <View style={{ flex: 1 }}>
-            <View style={styles.row}>
-              <MaterialCommunityIcons 
-                name="map-marker" 
-                size={20} 
-                color="black" 
-                style={{ marginRight: 5 }}
-              />
-              <Text style={styles.name}>
-                {selectedAddress?.name || "Selecione um endereço"}
-              </Text>
-              {selectedAddress && (
-                <Text style={styles.phone}>{selectedAddress.phone}</Text>
-              )}
-            </View>
-            {selectedAddress ? (
-              <>
-                <Text style={styles.address}>
-                  {selectedAddress.street}, {selectedAddress.number}, 
-                  {selectedAddress.neighborhood}
-                </Text>
-                <Text style={styles.address}>
-                  {selectedAddress.city}, {selectedAddress.state}, {selectedAddress.cep}
-                </Text>
-              </>
-            ) : (
-              <Text style={[styles.address, { fontStyle: 'italic' }]}>
-                Toque para adicionar um endereço
-              </Text>
-            )}
-          </View>
-          <MaterialCommunityIcons 
-            name="chevron-right" 
-            size={24} 
-            color="black" 
-          />
-        </TouchableOpacity>
-
-        <View style={{flex:1}}>
-          <FlatList
-            data={cart}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({item}) => (
-              <View style={styles.productcontainer}>
-                <Image
-                  source={{uri: item.image}}
-                  style={styles.image}
-                  resizeMode="cover"
-                />
-                <View style={{flex:1}}>
-                  <Text style={styles.prodname}>{item.name}</Text>
-                  <Text style={styles.prodprice}>
-                    R${(item.price * item.quantity).toFixed(2)}
+                });
+              }}
+            >
+              <View style={{ flex: 1 }}>
+                <View style={styles.row}>
+                  <MaterialCommunityIcons 
+                    name="map-marker" 
+                    size={20} 
+                    color="black" 
+                    style={{ marginRight: 5 }}
+                  />
+                  <Text style={styles.name}>
+                    {selectedAddress?.name || "Selecione um endereço"}
                   </Text>
+                  {selectedAddress && (
+                    <Text style={styles.phone}>{selectedAddress.phone}</Text>
+                  )}
                 </View>
-                <View style={styles.quantityContainer}>
-                  <Text style={styles.prodqtt}>Qtd: {item.quantity}</Text>
-                </View>
+                {selectedAddress ? (
+                  <>
+                    <Text style={styles.address}>
+                      {selectedAddress.street}, {selectedAddress.number}, {selectedAddress.neighborhood}
+                    </Text>
+                    <Text style={styles.address}>
+                      {selectedAddress.city}, {selectedAddress.state}, {selectedAddress.cep}
+                    </Text>
+                  </>
+                ) : (
+                  <Text style={[styles.address, { fontStyle: 'italic' }]}>
+                    Toque para adicionar um endereço
+                  </Text>
+                )}
               </View>
-            )}
-          />
-        </View>
+              <MaterialCommunityIcons 
+                name="chevron-right" 
+                size={24} 
+                color="black" 
+              />
+            </TouchableOpacity>
+          )}
 
+          <View style={{flex:1}}>
+            <FlatList
+              data={cart}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({item}) => (
+                <View style={styles.productcontainer}>
+                  <Image
+                    source={{uri: item.image}}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                  <View style={{flex:1}}>
+                    <Text style={styles.prodname}>{item.name}</Text>
+                    <Text style={styles.prodprice}>
+                      R${Number(item.price * item.quantity).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </Text>
+                  </View>
+                  <View style={styles.quantityContainer}>
+                    <Text style={styles.prodqtt}>Qtd: {item.quantity}</Text>
+                  </View>
+                </View>
+              )}
+            />
+          </View>
+          <View style={styles.method}>
+              <View style={styles.methodtextview}>
+                <Text style={styles.methodtext}>Método de entrega</Text>
+              </View>
+              <View>
+                {[
+                  { id: 'store', label: 'Retirada na loja', plus: '' },
+                  { id: 'motoboy', label: 'Motoboy', plus: 'Frete: R$ 15,00' }
+                ].map((option) => (
+                  <TouchableOpacity
+                    key={option.id}
+                    style={styles.methodOption}
+                    onPress={() => setSelectedDelivery(option.id)}
+                  >
+                    <View style={styles.methodRow}>
+                      <Text style={styles.methodLabel} numberOfLines={1}>{option.label}</Text>
+                      <View style={styles.freteContainer}>
+                        {option.plus && <Text style={styles.plus}>{option.plus}</Text>}
+                        <View style={styles.radio}>
+                          {selectedDelivery === option.id && <View style={styles.radioSelected} />}
+                        </View>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+          </View>
+        </ScrollView>
         <View style={styles.bottomBar}>
           <View style={styles.total}>
-            <Text style={styles.totalText}>Total: R${total.toFixed(2)}</Text>
+            <Text style={styles.totalText}>Total: R${Number(displayTotal).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
           </View>
           <View style={styles.button}>
             <TouchableOpacity
@@ -254,5 +317,58 @@ const styles = StyleSheet.create({
   total: {
     flex: 1,
     alignItems: 'center',
-  }
+  },
+
+
+  method:{
+    backgroundColor: "#d9b898",
+    flex: 1,
+    margin: 10,
+    borderRadius: 10,
+    padding: 10,
+  },
+  methodtextview:{
+    marginBottom: 8,
+  },
+  methodtext:{
+    fontSize: 20,
+    fontWeight: 'bold',
+    justifyContent: 'center',
+  },
+  methodOption: {
+    marginBottom: 10,
+  },
+  methodRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 8,
+  },
+  methodLabel:{
+    fontSize: 17,
+    flex: 1, 
+  },
+  freteContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  plus:{
+    fontSize: 15,
+    marginRight: 10,
+  },
+  radio: { 
+    height: 22, 
+    width: 22, 
+    borderRadius: 11, 
+    borderWidth: 2, 
+    borderColor: "#000", 
+    alignItems: "center", 
+    justifyContent: "center", 
+  },
+  radioSelected: { 
+    height: 12, 
+    width: 12, 
+    borderRadius: 6, 
+    backgroundColor: "#000" 
+  },
 });

@@ -22,7 +22,6 @@ export function CartProvider({ children }) {
 
           if (docSnap.exists()) {
             const data = docSnap.data();
-            // Garante que cada item tem quantity
             const products = Array.isArray(data.products) 
               ? data.products.map(p => ({ ...p, quantity: p.quantity || 1 }))
               : [];
@@ -70,6 +69,10 @@ export function CartProvider({ children }) {
     }
   }
 
+  const clearCart = () => {
+    setCart([]);
+  };
+
   function increase(item) {
     const updatedCart = cart.map((p) =>
       p.id === item.id ? { ...p, quantity: p.quantity + 1 } : p
@@ -95,7 +98,7 @@ export function CartProvider({ children }) {
   }
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, increase, decrease, remove }}>
+    <CartContext.Provider value={{ cart, addToCart, increase, decrease, remove, clearCart, loadingCart }}>
       {children}
     </CartContext.Provider>
   );
