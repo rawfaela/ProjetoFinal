@@ -17,7 +17,7 @@ export default function FinishPurchase({navigation, route}) {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedDelivery, setSelectedDelivery] = useState(null);
 
-  const freight = selectedDelivery === 'motoboy' ? 15 : 0;
+  const freight = selectedDelivery === 'Motoboy' ? 15 : 0;
   const displayTotal = baseTotal + freight;
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function FinishPurchase({navigation, route}) {
   }, [navigation, route.params]);
 
   const handlePurchase = async () => {
-    if (selectedDelivery === 'motoboy' && !selectedAddress) {
+    if (selectedDelivery === 'Motoboy' && !selectedAddress) {
       showNotif('Por favor, selecione um endereço de entrega!', 'error');
       return;
     }
@@ -54,7 +54,7 @@ export default function FinishPurchase({navigation, route}) {
         total: displayTotal,
         deliveryMethod: selectedDelivery,
         timestamp: new Date(),
-        ...(selectedDelivery === 'motoboy' && { address: selectedAddress }),
+        ...(selectedDelivery === 'Motoboy' && { address: selectedAddress }),
         situation: 'Em análise'
       });
       showNotif('Compra realizada com sucesso!', 'success');
@@ -86,7 +86,7 @@ export default function FinishPurchase({navigation, route}) {
     fetchSelectedAddress();
   }, []);
 
-  const showAddressSection = selectedDelivery === 'motoboy';
+  const showAddressSection = selectedDelivery === 'Motoboy';
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#eddaba' }}>
@@ -180,8 +180,8 @@ export default function FinishPurchase({navigation, route}) {
               </View>
               <View>
                 {[
-                  { id: 'store', label: 'Retirada na loja', plus: '' },
-                  { id: 'motoboy', label: 'Motoboy', plus: 'Frete: R$ 15,00' }
+                  { id: 'Retirada na loja', plus: '' },
+                  { id: 'Motoboy', plus: 'Frete: R$ 15,00' }
                 ].map((option) => (
                   <TouchableOpacity
                     key={option.id}
@@ -189,7 +189,7 @@ export default function FinishPurchase({navigation, route}) {
                     onPress={() => setSelectedDelivery(option.id)}
                   >
                     <View style={styles.methodRow}>
-                      <Text style={styles.methodLabel} numberOfLines={1}>{option.label}</Text>
+                      <Text style={styles.methodLabel} numberOfLines={1}>{option.id}</Text>
                       <View style={styles.freteContainer}>
                         {option.plus && <Text style={styles.plus}>{option.plus}</Text>}
                         <View style={styles.radio}>

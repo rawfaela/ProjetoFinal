@@ -4,8 +4,10 @@ import { onAuthStateChanged } from "firebase/auth";
 import { db, auth } from "../../components/controller";
 import { collection, getDocs } from "firebase/firestore";
 import { useState, useEffect } from 'react';
+import { useNavigation } from "@react-navigation/native";
 
-export default function Purchases(){
+export default function Purchases() {
+  const navigation = useNavigation();
   const [purchases, setPurchases] = useState([]);
   const [loadingPurchases, setLoadingPurchases] = useState(true);
   const [user, setUser] = useState(null);
@@ -51,7 +53,7 @@ export default function Purchases(){
 
   return (
     <SafeAreaView style={{flex:1, backgroundColor:'#eddaba'}}>
-      <View style={styles.container}>
+      <View>
         <Text style={styles.title}>COMPRAS</Text>
         {purchases.length === 0 ? (
           <Text style={styles.empty}>Você não realizou nenhuma compra ainda...</Text>
@@ -59,50 +61,56 @@ export default function Purchases(){
           <FlatList
             showsVerticalScrollIndicator={false}
             data={purchases}
-            keyExtractor={(item) => item.id || Math.random().toString()} 
+            keyExtractor={(item) => item.id.toString()} 
             renderItem={({item}) => (
-              <TouchableOpacity style={styles.productcontainer}>
-                <Image
-                  source={{ uri: item.items[0].image }}
-                  style={styles.image}
-                  resizeMode="cover"
-                />
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.name}>
-                    {item.items[0].name}
-                    {item.items.length > 1 && (
-                      <Text style={{ fontStyle: 'italic', color: '#545753ff' }}> & outros</Text>
-                    )}
-                  </Text>
-                  <Text style={styles.data}>Total: R$ {Number(item.total).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
-                  <Text style={styles.data}>Data: {item.timestamp.toLocaleDateString('pt-BR')}</Text>
-                  <Text style={styles.data}>Situação: 
-                    <Text style={[
-                      styles.data,
-                      {
-                        color:
-                          item.situation === 'A caminho' ? '#f5c529ff' 
-                            : item.situation === 'Cancelado' ? '#c0392b' 
-                            : item.situation === 'Entregue' ? '#119505ff' 
-                            : item.situation === 'Em análise' ? '#bf6007ff'
-                            : '#000',  
-                      },
-                    ]}> {item.situation}</Text>
-                  </Text> 
+              <View style={styles.productcontainer}>
+                <View style={styles.topinfo}>
+                  <Text style={styles.data}>
+                    Situação: 
+                      <Text style={[
+                        styles.data,
+                        {
+                          color:
+                            item.situation === 'A caminho' ? '#f5c529' 
+                              : item.situation === 'Cancelado' ? '#c0392b' 
+                              : item.situation === 'Entregue' ? '#119505' 
+                              : item.situation === 'Em análise' ? '#bf6007'
+                              : '#000',  
+                        },
+                      ]}> {item.situation}</Text>
+                    </Text> 
+                    <Text style={styles.data}>
+                      Data: {item.timestamp.toLocaleDateString('pt-BR')}
+                    </Text>
                 </View>
-              </TouchableOpacity>
+                <View>
+                  {item.items && item.items.map((product, i) => (
+                    <View key={i} style={styles.productRow}>
+                      <Image
+                        source={{ uri: product.image }}
+                        style={styles.image}
+                        resizeMode="cover"
+                      />
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.name}>{product.name}</Text>
+                        <Text style={styles.data}>Preço unitário: R$ {Number(product.price).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
+                        <Text style={styles.data}>Quantidade: {product.quantity}</Text>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+                <Text style={styles.total}>Método de entrega: {item.deliveryMethod}</Text>
+                <Text style={styles.total}>Total: R${Number(item.total).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
+              </View>
             )}
           />
-        )}
+        )}  
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -111,12 +119,20 @@ const styles = StyleSheet.create({
   },
   productcontainer: {
     backgroundColor: "#a9b388",
-    flex: 1,
-    flexDirection: 'row',      
-    alignItems: 'center',      
     padding: 10,     
-    borderRadius: 10,           
-    margin: 10,                 
+    borderRadius: 10,
+    margin: 10,
+  },
+  productRow: {
+    flexDirection: 'row', 
+    alignItems: 'flex-start',
+    marginTop: 10,
+  },
+  topinfo: {
+    marginBottom: 1,
+    borderBottomWidth: 2,  
+    borderBottomColor: '#eddaba',  
+    paddingBottom: 5,      
   },
   image:{
     height: 85,
@@ -132,9 +148,10 @@ const styles = StyleSheet.create({
   data: {
     fontSize: 16
   },
-
-
-
+  total: {
+    fontSize: 14,
+    textAlign: 'right'
+  },
   empty: {
     textAlign: 'center',
     fontSize: 20,
