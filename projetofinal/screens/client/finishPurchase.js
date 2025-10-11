@@ -46,17 +46,20 @@ export default function FinishPurchase({navigation, route}) {
       return;
     }
 
-    const ref = collection(db, "purchases", user.uid, "userPurchases");
+    const ref = collection(db, "purchases");
 
     try {
       await addDoc(ref, {
+        userId: user.uid,
+        userEmail: user.email,
         items: cart,
         total: displayTotal,
         deliveryMethod: selectedDelivery,
         timestamp: new Date(),
+        situation: 'Em análise',
         ...(selectedDelivery === 'Motoboy' && { address: selectedAddress }),
-        situation: 'Em análise'
       });
+
       showNotif('Compra realizada com sucesso!', 'success');
       clearCart();
       navigation.navigate('TabsClient',{screen:'Home'});

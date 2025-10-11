@@ -2,12 +2,11 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList } from 'react
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { onAuthStateChanged } from "firebase/auth";
 import { db, auth } from "../../components/controller";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { useState, useEffect } from 'react';
 import { useNavigation } from "@react-navigation/native";
 
 export default function Purchases() {
-  const navigation = useNavigation();
   const [purchases, setPurchases] = useState([]);
   const [loadingPurchases, setLoadingPurchases] = useState(true);
   const [user, setUser] = useState(null);
@@ -20,10 +19,11 @@ export default function Purchases() {
         setLoadingPurchases(true); 
         
         try {
-          const purchasesCollection = collection(db, 'purchases', user .uid, 'userPurchases');
+          const purchasesCollection = query(collection(db, "purchases"), where("userId", "==", user.uid));
           const querySnapshot = await getDocs(purchasesCollection); 
 
           const purchasesData = [];
+          
           querySnapshot.forEach((doc) => {
             const data = doc.data();
             purchasesData.push({
@@ -71,7 +71,7 @@ export default function Purchases() {
                         styles.data,
                         {
                           color:
-                            item.situation === 'A caminho' ? '#f5c529' 
+                            item.situation === 'Confirmado' ? '#f5c529' 
                               : item.situation === 'Cancelado' ? '#c0392b' 
                               : item.situation === 'Entregue' ? '#119505' 
                               : item.situation === 'Em análise' ? '#bf6007'
