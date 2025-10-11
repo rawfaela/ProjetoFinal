@@ -32,7 +32,7 @@ export default function Stock() {
               <Text style={styles.price}>R$30,99</Text>
             </View>
             <View style={styles.counterContainer}>
-              <TouchableOpacity style={styles.button} onPress={decrease}>
+              <TouchableOpacity style={[styles.button, { borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }]} onPress={decrease}>
                 <Text style={styles.txtbutton}>-</Text>
               </TouchableOpacity>
               <TextInput
@@ -41,7 +41,7 @@ export default function Stock() {
                 value={quantity.toString()}
                 onChangeText={handleChange}
               />
-              <TouchableOpacity style={styles.button} onPress={increase}>
+              <TouchableOpacity style={[styles.button, { borderTopRightRadius: 8, borderBottomRightRadius: 8 }]} onPress={increase}>
                 <Text style={styles.txtbutton}>+</Text>
               </TouchableOpacity>
             </View>
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10
   },
   productcontainer: {
-    backgroundColor: "#a9b388",
+    backgroundColor: "#dbb795",
     height: '15%',
     flexDirection: 'row',
     alignItems: 'center',
@@ -89,35 +89,29 @@ const styles = StyleSheet.create({
   counterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
     paddingLeft: 20
   },
   button: {
-    backgroundColor: '#5f6f52',
-    height: 30,
+    backgroundColor: 'white',
+    height: 40,
     width: 30,
-    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center'
   },
   txtbutton: {
     textAlign: 'center',
-    color: 'white',
+    color: 'black',
     fontSize: 18,
     fontWeight: 'bold'
   },
   counterInput: {
-    backgroundColor: '#a9b388',
+    backgroundColor: 'white',
     width: 50,
     height: 40,
     textAlign: 'center',
     padding: 0,
-    borderRadius: 8,
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#3b3b1a',
-    borderWidth: 1,
-    borderColor: '#5f6f52',
     ...(Platform.OS === 'android' ? { textAlignVertical: 'center' } : {})
   }
 });

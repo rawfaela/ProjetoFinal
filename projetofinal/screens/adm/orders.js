@@ -18,7 +18,7 @@ export default function Orders() {
       if (user) {
         setLoadingPurchases(true);
         try {
-          // busca todos os pedidos (ADM vê todos)
+          // 🔹 Busca todas as compras (ADM vê todas)
           const snapshot = await getDocs(collection(db, "purchases"));
           const allPurchases = snapshot.docs.map(doc => ({
             id: doc.id,
@@ -27,7 +27,6 @@ export default function Orders() {
           }));
 
           allPurchases.sort((a, b) => b.timestamp - a.timestamp);
-
           setPurchases(allPurchases);
         } catch (error) {
           console.log('Erro ao carregar compras', error);
@@ -44,7 +43,7 @@ export default function Orders() {
     return () => unsubscribe();
   }, []);
 
-  // ✅ Função para aceitar pedido
+  // ✅ Aceitar pedido
   const accept = async (item) => {
     try {
       await updateDoc(doc(db, "purchases", item.id), { situation: "Confirmado" });
@@ -54,7 +53,7 @@ export default function Orders() {
     }
   };
 
-  // ❌ Função para negar pedido
+  // ❌ Cancelar pedido
   const deny = async (item) => {
     try {
       await updateDoc(doc(db, "purchases", item.id), { situation: "Cancelado" });
@@ -101,6 +100,20 @@ export default function Orders() {
                     </Text>
                   </View>
 
+                  {/* 🔹 Nome e endereço do cliente */}
+                  <Text style={styles.client}>Cliente: {item.address?.name || item.userEmail}</Text>
+                  {item.deliveryMethod === 'Motoboy' && item.address && (
+                    <>
+                      <Text style={styles.client}>
+                        Endereço: {item.address.street}, {item.address.number}, {item.address.neighborhood}
+                      </Text>
+                      <Text style={styles.client}>
+                        {item.address.city} - {item.address.state}, CEP {item.address.cep}
+                      </Text>
+                      <Text style={styles.client}>Telefone: {item.address.phone}</Text>
+                    </>
+                  )}
+
                   <View>
                     {item.items && item.items.map((product, i) => (
                       <View key={i} style={styles.productRow}>
@@ -123,16 +136,15 @@ export default function Orders() {
 
                   {item.situation === 'Em análise' && (
                     <View style={styles.checkContainer}>
-                    <TouchableOpacity onPress={() => accept(item)}>
-                      <Ionicons name="checkmark-circle" size={35} color="#3b3b1a" />
-                    </TouchableOpacity>
+                      <TouchableOpacity onPress={() => accept(item)}>
+                        <Ionicons name="checkmark-circle" size={35} color="#3b3b1a" />
+                      </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => deny(item)}>
-                      <Ionicons name="close-circle" size={35} color="#3b3b1a" />
-                    </TouchableOpacity>
-                  </View>
+                      <TouchableOpacity onPress={() => deny(item)}>
+                        <Ionicons name="close-circle" size={35} color="#3b3b1a" />
+                      </TouchableOpacity>
+                    </View>
                   )}
-                  
                 </View>
               )}
             />
@@ -160,6 +172,7 @@ const styles = StyleSheet.create({
   },
   topinfo: { flexDirection: 'row', justifyContent: 'space-between' },
   data: { fontSize: 15 },
+  client: { fontSize: 15, fontWeight: '500', color: '#2f2f2f' },
   productRow: { flexDirection: 'row', marginVertical: 5 },
   image: { height: 85, width: 85, borderRadius: 8, marginRight: 10 },
   name: { color: '#3b3b1a', fontSize: 19, fontWeight: 'bold' },
@@ -170,8 +183,8 @@ const styles = StyleSheet.create({
     color: '#2c2c2c',
   },
   checkContainer: {
+    alignSelf: 'center',
     flexDirection: 'row',
-    alignItems: 'center',
     gap: 10,
     marginTop: 10,
   },
