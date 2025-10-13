@@ -1,51 +1,131 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Platform, Keyboard, TouchableWithoutFeedback, FlatList, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { db } from '../../components/controller';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 export default function Stock() {
-  const [quantity, setQuantity] = useState(0);
-  const increase = () => setQuantity(prev => prev + 1);
-  const decrease = () => setQuantity(prev => (prev > 0 ? prev - 1 : 0));
+  const [products, setProducts] = useState([]);
+  const [quantities, setQuantities] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  const handleChange = (text) => {
+  useEffect(() => {
+    // Listener em tempo real do Firebase
+    const unsubscribe = onSnapshot(
+      collection(db, "products"),
+      (snapshot) => {
+        const loadedProducts = [];
+        snapshot.forEach((doc) => {
+          loadedProducts.push({
+            id: doc.id,
+            ...doc.data(),
+          });
+          // Inicializa quantidade com o valor do banco
+          setQuantities(prev => ({
+            ...prev,
+            [doc.id]: doc.data().quantity || 0
+          }));
+        });
+        setProducts(loadedProducts);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Erro ao buscar produtos: ", error);
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  const increase = (productId) => {
+    setQuantities(prev => ({
+      ...prev,
+      [productId]: (prev[productId] || 0) + 1
+    }));
+  };
+
+  const decrease = (productId) => {
+    setQuantities(prev => ({
+      ...prev,
+      [productId]: prev[productId] > 0 ? prev[productId] - 1 : 0
+    }));
+  };
+
+  const handleChange = (productId, text) => {
     const num = parseInt(text, 10);
     if (!isNaN(num) && num >= 0) {
-      setQuantity(num);
+      setQuantities(prev => ({
+        ...prev,
+        [productId]: num
+      }));
     } else if (text === "") {
-      setQuantity(0);
+      setQuantities(prev => ({
+        ...prev,
+        [productId]: 0
+      }));
     }
   };
+
+  const renderProduct = ({ item }) => (
+    <View style={styles.productcontainer}>
+      <Image
+        source={{ uri: item.image }}
+        style={styles.image}
+        resizeMode="cover"
+      />
+      <View style={styles.productInfo}>
+        <Text style={styles.name}>{item.name}</Text>
+        <Text style={styles.price}>R${item.price?.toFixed(2)}</Text>
+      </View>
+      <View style={styles.counterContainer}>
+        <TouchableOpacity 
+          style={[styles.button, { borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }]} 
+          onPress={() => decrease(item.id)}
+        >
+          <Text style={styles.txtbutton}>-</Text>
+        </TouchableOpacity>
+        <TextInput
+          style={styles.counterInput}
+          keyboardType="numeric"
+          value={(quantities[item.id] || 0).toString()}
+          onChangeText={(text) => handleChange(item.id, text)}
+        />
+        <TouchableOpacity 
+          style={[styles.button, { borderTopRightRadius: 8, borderBottomRightRadius: 8 }]} 
+          onPress={() => increase(item.id)}
+        >
+          <Text style={styles.txtbutton}>+</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
+  if (loading) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#eddaba', justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#6a7e4e" />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <SafeAreaView style={{ flex: 1, backgroundColor: '#eddaba' }}>
         <View style={styles.container}>
           <Text style={styles.title}>ESTOQUE</Text>
-          <View style={styles.productcontainer}>
-            <Image
-              source={{ uri: 'https://www.nutrire.ind.br/images/f69cb32b09206b60746c751f7d6f7b96.png' }}
-              style={styles.image}
-              resizeMode="cover"
+          {products.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>Nenhum produto adicionado ainda</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={products}
+              renderItem={renderProduct}
+              keyExtractor={(item) => item.id}
+              scrollEnabled={true}
             />
-            <View>
-              <Text style={styles.name}>Gatinho fofo</Text>
-              <Text style={styles.price}>R$30,99</Text>
-            </View>
-            <View style={styles.counterContainer}>
-              <TouchableOpacity style={[styles.button, { borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }]} onPress={decrease}>
-                <Text style={styles.txtbutton}>-</Text>
-              </TouchableOpacity>
-              <TextInput
-                style={styles.counterInput}
-                keyboardType="numeric"
-                value={quantity.toString()}
-                onChangeText={handleChange}
-              />
-              <TouchableOpacity style={[styles.button, { borderTopRightRadius: 8, borderBottomRightRadius: 8 }]} onPress={increase}>
-                <Text style={styles.txtbutton}>+</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          )}
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -53,9 +133,6 @@ export default function Stock() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -64,10 +141,10 @@ const styles = StyleSheet.create({
   },
   productcontainer: {
     backgroundColor: "#dbb795",
-    height: '15%',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
+    paddingVertical: 8,
     borderRadius: 10,
     margin: 10,
   },
@@ -77,19 +154,23 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginRight: 10,
   },
+  productInfo: {
+    flex: 1,
+    marginRight: 10,
+  },
   name: {
     color: '#5f6f52',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   price: {
-    fontSize: 19,
-    color: '#3b3b1a'
+    fontSize: 16,
+    color: '#3b3b1a',
+    fontWeight: 'bold'
   },
   counterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 20
   },
   button: {
     backgroundColor: 'white',
@@ -110,8 +191,18 @@ const styles = StyleSheet.create({
     height: 40,
     textAlign: 'center',
     padding: 0,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     ...(Platform.OS === 'android' ? { textAlignVertical: 'center' } : {})
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#5f6f52',
+    fontWeight: 'bold'
   }
 });
