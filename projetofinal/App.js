@@ -12,6 +12,7 @@ import MoreInfo from './screens/client/moreInfo';
 import AddressStack from './screens/client/address';
 import FinishPurchase from './screens/client/finishPurchase';
 import OrderInfo from './screens/orderInfo';
+import { DataProvider } from './components/dataContext';
 import { CartProvider } from './components/cartProvider';
 import { NotificationProvider } from './components/notif';
 import { NavigationContainer } from '@react-navigation/native';
@@ -41,30 +42,32 @@ export default function App() {
   const Stack = createStackNavigator();
 
   return (
-    <CartProvider>
-      <NotificationProvider>
-        <NavigationContainer>
-          <Stack.Navigator>
-            
-            <Stack.Screen name='LogIn' component={LogIn} options={{ headerShown: false }}/>
+    <DataProvider>
+      <CartProvider>
+        <NotificationProvider>
+          <NavigationContainer>
+            <Stack.Navigator>
+              
+              <Stack.Screen name='LogIn' component={LogIn} options={{ headerShown: false }}/>
 
-            <Stack.Screen name='SignIn' component={SignIn} options={{headerShown: false}}/>
+              <Stack.Screen name='SignIn' component={SignIn} options={{headerShown: false}}/>
 
-            <Stack.Screen name='TabsClient' component={TabsClient} options={{headerShown: false}}/>
+              <Stack.Screen name='TabsClient' component={TabsClient} options={{headerShown: false}}/>
 
-            <Stack.Screen name='TabsADM' component={TabsADM} options={{headerShown: false}}/>
-      
-            <Stack.Screen name='MoreInfo' component={MoreInfo} options={{headerShown: false}}/>
+              <Stack.Screen name='TabsADM' component={TabsADM} options={{headerShown: false}}/>
+        
+              <Stack.Screen name='MoreInfo' component={MoreInfo} options={{headerShown: false}}/>
 
-            <Stack.Screen name='FinishPurchase'component={FinishPurchase} options={{headerShown: false}}/>
+              <Stack.Screen name='FinishPurchase'component={FinishPurchase} options={{headerShown: false}}/>
 
-            <Stack.Screen name='AddressStack' component={AddressStack} options={{headerShown: false}}/>
-            
-            <Stack.Screen name='OrderInfo' component={OrderInfo} options={{headerShown: false}}/> 
+              <Stack.Screen name='AddressStack' component={AddressStack} options={{headerShown: false}}/>
+              
+              <Stack.Screen name='OrderInfo' component={OrderInfo} options={{headerShown: false}}/> 
 
-          </Stack.Navigator>
-        </NavigationContainer>
-      </NotificationProvider>
-    </CartProvider>
+            </Stack.Navigator>
+          </NavigationContainer>
+        </NotificationProvider>
+      </CartProvider>
+    </DataProvider>
   )
 }

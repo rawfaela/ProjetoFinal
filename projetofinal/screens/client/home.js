@@ -4,11 +4,18 @@ import { useEffect, useState } from 'react';
 import { db } from '../../components/controller';
 import { collection, getDocs } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
+import { useContext } from 'react';
+import { DataContext } from '../../components/dataContext';
 
 export default function Home(){
   const navigation = useNavigation();
   const [search, setSearch] = useState('');
-  const [products, setProducts] = useState([]);
+  const [localProducts, setProducts] = useState([]);
+  const { products, loading } = useContext(DataContext);
+
+  useEffect(() => {
+    setProducts(products);
+  }, [products]);
 
   useEffect(() => {
     async function loadProducts() {
@@ -40,7 +47,7 @@ export default function Home(){
           <Image source={require('../../assets/lupinha.png')} style={styles.icon} />
         </View>
         
-        <FlatList data={products.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))} renderItem={({item}) => (
+        <FlatList data={localProducts.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))} renderItem={({item}) => (
           <View style={styles.background}>
             <TouchableOpacity style={styles.touchContainer} onPress={() => navigation.navigate('MoreInfo', {item})}>  
                 <Image source={{uri: item.image}} style={styles.img}></Image>

@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 10,
         backgroundColor: '#dbb795',
-        borderColor: '#333',
+        borderColor: '#a17951ff',
     },
     imageButton: {
         backgroundColor: '#6c7b7f',

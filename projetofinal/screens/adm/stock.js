@@ -1,105 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Platform, Keyboard, TouchableWithoutFeedback, FlatList, ActivityIndicator } from 'react-native';
+import { useState, useContext, useEffect } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, FlatList, ActivityIndicator, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { db } from '../../components/controller';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { doc, updateDoc } from "firebase/firestore";
+import { DataContext } from '../../components/dataContext';
 
 export default function Stock() {
-  const [products, setProducts] = useState([]);
+  const { products, loading } = useContext(DataContext);
   const [quantities, setQuantities] = useState({});
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Listener em tempo real do Firebase
-    const unsubscribe = onSnapshot(
-      collection(db, "products"),
-      (snapshot) => {
-        const loadedProducts = [];
-        snapshot.forEach((doc) => {
-          loadedProducts.push({
-            id: doc.id,
-            ...doc.data(),
-          });
-          // Inicializa quantidade com o valor do banco
-          setQuantities(prev => ({
-            ...prev,
-            [doc.id]: doc.data().quantity || 0
-          }));
-        });
-        setProducts(loadedProducts);
-        setLoading(false);
-      },
-      (error) => {
-        console.error("Erro ao buscar produtos: ", error);
-        setLoading(false);
-      }
-    );
+    const initialQuantities = {};
+    products.forEach(p => {
+      initialQuantities[p.id] = p.quantity ?? 0;
+    });
+    setQuantities(initialQuantities);
+  }, [products]);
 
-    return () => unsubscribe();
-  }, []);
-
-  const increase = (productId) => {
-    setQuantities(prev => ({
-      ...prev,
-      [productId]: (prev[productId] || 0) + 1
-    }));
+  const updateStock = async (productId, newQuantity) => {
+    try {
+      await updateDoc(doc(db, "products", productId), { quantity: newQuantity });
+    } catch (error) {
+      console.error("Erro ao atualizar estoque:", error);
+    }
   };
 
-  const decrease = (productId) => {
-    setQuantities(prev => ({
-      ...prev,
-      [productId]: prev[productId] > 0 ? prev[productId] - 1 : 0
-    }));
+  const increase = async (productId) => {
+    const newQty = (quantities[productId] || 0) + 1;
+    setQuantities(prev => ({ ...prev, [productId]: newQty }));
+    await updateStock(productId, newQty);
+  };
+
+  const decrease = async (productId) => {
+    const newQty = quantities[productId] > 0 ? quantities[productId] - 1 : 0;
+    setQuantities(prev => ({ ...prev, [productId]: newQty }));
+    await updateStock(productId, newQty);
   };
 
   const handleChange = (productId, text) => {
     const num = parseInt(text, 10);
     if (!isNaN(num) && num >= 0) {
-      setQuantities(prev => ({
-        ...prev,
-        [productId]: num
-      }));
-    } else if (text === "") {
-      setQuantities(prev => ({
-        ...prev,
-        [productId]: 0
-      }));
+      setQuantities(prev => ({ ...prev, [productId]: num }));
     }
   };
-
-  const renderProduct = ({ item }) => (
-    <View style={styles.productcontainer}>
-      <Image
-        source={{ uri: item.image }}
-        style={styles.image}
-        resizeMode="cover"
-      />
-      <View style={styles.productInfo}>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.price}>R${item.price?.toFixed(2)}</Text>
-      </View>
-      <View style={styles.counterContainer}>
-        <TouchableOpacity 
-          style={[styles.button, { borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }]} 
-          onPress={() => decrease(item.id)}
-        >
-          <Text style={styles.txtbutton}>-</Text>
-        </TouchableOpacity>
-        <TextInput
-          style={styles.counterInput}
-          keyboardType="numeric"
-          value={(quantities[item.id] || 0).toString()}
-          onChangeText={(text) => handleChange(item.id, text)}
-        />
-        <TouchableOpacity 
-          style={[styles.button, { borderTopRightRadius: 8, borderBottomRightRadius: 8 }]} 
-          onPress={() => increase(item.id)}
-        >
-          <Text style={styles.txtbutton}>+</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
 
   if (loading) {
     return (
@@ -110,28 +53,45 @@ export default function Stock() {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#eddaba' }}>
-        <View style={styles.container}>
-          <Text style={styles.title}>ESTOQUE</Text>
-          {products.length === 0 ? (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>Nenhum produto adicionado ainda</Text>
-            </View>
-          ) : (
-            <FlatList
-              data={products}
-              renderItem={renderProduct}
-              keyExtractor={(item) => item.id}
-              scrollEnabled={true}
-            />
-          )}
-        </View>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#eddaba' }}>
+      <View style={styles.container}>
+        <Text style={styles.title}>ESTOQUE</Text>
+
+        {products.length === 0 ? (
+          <Text style={styles.emptyText}>Nenhum produto adicionado ainda</Text>
+        ) : (
+          <FlatList
+            data={products}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.productcontainer}>
+                <Image source={{ uri: item.image }} style={styles.image} />
+                <View style={styles.productInfo}>
+                  <Text style={styles.name}>{item.name}</Text>
+                  <Text style={styles.price}>R${item.price?.toFixed(2)}</Text>
+                </View>
+                <View style={styles.counterContainer}>
+                  <TouchableOpacity style={[styles.button, { borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }]}onPress={() => decrease(item.id)}>
+                    <Text style={styles.txtbutton}>-</Text>
+                  </TouchableOpacity>
+                  <TextInput
+                    style={styles.counterInput}
+                    keyboardType="numeric"
+                    value={(quantities[item.id] ?? item.quantity ?? 0).toString()}
+                    onChangeText={(text) => handleChange(item.id, text)}
+                  />
+                  <TouchableOpacity style={[styles.button, { borderTopRightRadius: 8, borderBottomRightRadius: 8 }]} onPress={() => increase(item.id)}>
+                    <Text style={styles.txtbutton}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+          />
+        )}
+      </View>
+    </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   title: {
     fontSize: 24,

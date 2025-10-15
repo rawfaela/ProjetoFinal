@@ -3,57 +3,48 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { onAuthStateChanged } from "firebase/auth";
 import { db, auth } from "../../components/controller";
-import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
-import { useState, useEffect } from 'react';
+import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { useContext, useState, useEffect } from 'react';
+import { DataContext } from '../../components/dataContext';
+
+//! nao ta mudando qtd quando aceita pedido, ver parte de aceitação e mudança em tempo real do estado do pedido (2 cllr diff)
 
 export default function Orders() {
+  const { orders, loading } = useContext(DataContext);
   const [purchases, setPurchases] = useState([]);
-  const [loadingPurchases, setLoadingPurchases] = useState(true);
-  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setUser(user);
+    setPurchases(orders); 
+  }, [orders]);
 
-      if (user) {
-        setLoadingPurchases(true);
-        try {
-          // 🔹 Busca todas as compras (ADM vê todas)
-          const snapshot = await getDocs(collection(db, "purchases"));
-          const allPurchases = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-            timestamp: doc.data().timestamp?.toDate ? doc.data().timestamp.toDate() : new Date()
-          }));
-
-          allPurchases.sort((a, b) => b.timestamp - a.timestamp);
-          setPurchases(allPurchases);
-        } catch (error) {
-          console.log('Erro ao carregar compras', error);
-          setPurchases([]);
-        } finally {
-          setLoadingPurchases(false);
-        }
-      } else {
-        setPurchases([]);
-        setLoadingPurchases(false);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  // ✅ Aceitar pedido
   const accept = async (item) => {
     try {
       await updateDoc(doc(db, "purchases", item.id), { situation: "Confirmado" });
-      setPurchases(prev => prev.map(p => p.id === item.id ? { ...p, situation: "Confirmado" } : p));
+      if (item.items && item.items.length > 0) {
+      for (const product of item.items) {
+        const productRef = doc(db, "products", product.id); 
+        const productSnap = await getDoc(productRef);
+
+        if (productSnap.exists()) {
+          const currentStock = productSnap.data().stock || 0;
+          const newStock = Math.max(currentStock - product.quantity, 0); 
+
+          await updateDoc(productRef, { stock: newStock });
+        } else {
+          console.log(`Produto ${product.name} não encontrado no estoque`);
+        }
+      }
+      }
+
+    setPurchases(prev =>
+      prev.map(p => p.id === item.id ? { ...p, situation: "Confirmado" } : p)
+    );
+
     } catch (error) {
       console.log("Erro ao aceitar pedido:", error);
     }
   };
 
-  // ❌ Cancelar pedido
   const deny = async (item) => {
     try {
       await updateDoc(doc(db, "purchases", item.id), { situation: "Cancelado" });
@@ -69,7 +60,7 @@ export default function Orders() {
         <View style={styles.container}>
           <Text style={styles.title}>PEDIDOS</Text>
 
-          {loadingPurchases ? (
+          {loading ? (
             <Text style={styles.empty}>Carregando pedidos...</Text>
           ) : purchases.length === 0 ? (
             <Text style={styles.empty}>Nenhum pedido realizado...</Text>
@@ -100,7 +91,6 @@ export default function Orders() {
                     </Text>
                   </View>
 
-                  {/* 🔹 Nome e endereço do cliente */}
                   <Text style={styles.client}>Cliente: {item.address?.name || item.userEmail}</Text>
                   {item.deliveryMethod === 'Motoboy' && item.address && (
                     <>

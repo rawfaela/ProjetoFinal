@@ -3,59 +3,38 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { onAuthStateChanged } from "firebase/auth";
 import { db, auth } from "../../components/controller";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { useState, useEffect } from 'react';
-import { useNavigation } from "@react-navigation/native";
+import { useContext, useState, useEffect } from 'react';
+import { DataContext } from '../../components/dataContext';
 
 export default function Purchases() {
   const [purchases, setPurchases] = useState([]);
-  const [loadingPurchases, setLoadingPurchases] = useState(true);
   const [user, setUser] = useState(null);
+  const { orders, loading } = useContext(DataContext);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => { 
-      setUser (user);
-      
-      if (user) {
-        setLoadingPurchases(true); 
-        
-        try {
-          const purchasesCollection = query(collection(db, "purchases"), where("userId", "==", user.uid));
-          const querySnapshot = await getDocs(purchasesCollection); 
-
-          const purchasesData = [];
-          
-          querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            purchasesData.push({
-              id: doc.id, 
-              ...data,
-              timestamp: data.timestamp ? data.timestamp.toDate() : new Date(), 
-            });
-          });
-
-          purchasesData.sort((a, b) => b.timestamp - a.timestamp);
-          
-          setPurchases(purchasesData);
-        } catch (error) {
-          console.log('Erro ao carregar compras', error);
-          setPurchases([]); 
-        } finally {
-          setLoadingPurchases(false); 
-        }
-      } else {
-        setPurchases([]); 
-        setLoadingPurchases(false);
-      }
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
     });
 
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      const userPurchases = orders.filter(p => p.userId === user.uid);
+      setPurchases(userPurchases);
+    } else {
+      setPurchases([]);
+    }
+  }, [orders, user]);
+  
   return (
     <SafeAreaView style={{flex:1, backgroundColor:'#eddaba'}}>
       <View>
         <Text style={styles.title}>COMPRAS</Text>
-        {purchases.length === 0 ? (
+        {loading ? (
+          <Text style={styles.empty}>Carregando pedidos...</Text>
+        ) : purchases.length === 0 ? (
           <Text style={styles.empty}>Você não realizou nenhuma compra ainda...</Text>
         ) : (
           <FlatList
