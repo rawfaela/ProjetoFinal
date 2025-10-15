@@ -133,11 +133,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    backgroundColor: 'white',
+    backgroundColor: '#eddaba',
     height: 40,
     width: 30,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',   
   },
   txtbutton: {
     textAlign: 'center',
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   counterInput: {
-    backgroundColor: 'white',
+    backgroundColor: '#eddaba',
     width: 50,
     height: 40,
     textAlign: 'center',

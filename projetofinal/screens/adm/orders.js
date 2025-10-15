@@ -7,7 +7,7 @@ import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { useContext, useState, useEffect } from 'react';
 import { DataContext } from '../../components/dataContext';
 
-//! nao ta mudando qtd quando aceita pedido, ver parte de aceitação e mudança em tempo real do estado do pedido (2 cllr diff)
+//! ver parte de aceitação e mudança em tempo real do estado do pedido (2 cllr diff)
 
 export default function Orders() {
   const { orders, loading } = useContext(DataContext);
@@ -19,31 +19,41 @@ export default function Orders() {
 
   const accept = async (item) => {
     try {
+      // Atualiza situação do pedido
       await updateDoc(doc(db, "purchases", item.id), { situation: "Confirmado" });
+
       if (item.items && item.items.length > 0) {
-      for (const product of item.items) {
-        const productRef = doc(db, "products", product.id); 
-        const productSnap = await getDoc(productRef);
+        for (const product of item.items) {
+          const productRef = doc(db, "products", product.id); 
+          const productSnap = await getDoc(productRef);
 
-        if (productSnap.exists()) {
-          const currentStock = productSnap.data().stock || 0;
-          const newStock = Math.max(currentStock - product.quantity, 0); 
+          if (productSnap.exists()) {
+            // Pega a quantidade atual (use 'quantity' se esse é o campo que seu estoque usa)
+            const currentQuantity = productSnap.data().quantity || 0;
 
-          await updateDoc(productRef, { stock: newStock });
-        } else {
-          console.log(`Produto ${product.name} não encontrado no estoque`);
+            // Calcula nova quantidade
+            const newQuantity = Math.max(currentQuantity - product.quantity, 0);
+
+            console.log(`Produto: ${product.name}, atual: ${currentQuantity}, vendido: ${product.quantity}, novo: ${newQuantity}`);
+
+            // Atualiza no Firestore
+            await updateDoc(productRef, { quantity: newQuantity });
+          } else {
+            console.log(`Produto ${product.name} não encontrado no estoque`);
+          }
         }
       }
-      }
 
-    setPurchases(prev =>
-      prev.map(p => p.id === item.id ? { ...p, situation: "Confirmado" } : p)
-    );
+      // Atualiza o estado local para refletir a mudança na interface
+      setPurchases(prev =>
+        prev.map(p => p.id === item.id ? { ...p, situation: "Confirmado" } : p)
+      );
 
     } catch (error) {
       console.log("Erro ao aceitar pedido:", error);
     }
   };
+
 
   const deny = async (item) => {
     try {
