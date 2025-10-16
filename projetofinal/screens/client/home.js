@@ -11,7 +11,7 @@ export default function Home(){
   const navigation = useNavigation();
   const [search, setSearch] = useState('');
   const [localProducts, setProducts] = useState([]);
-  const { products, loading } = useContext(DataContext);
+  const { products } = useContext(DataContext);
 
   useEffect(() => {
     setProducts(products);
@@ -47,7 +47,11 @@ export default function Home(){
           <Image source={require('../../assets/lupinha.png')} style={styles.icon} />
         </View>
         
-        <FlatList data={localProducts.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))} renderItem={({item}) => (
+        <FlatList data={localProducts.filter(item =>item.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(search.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')))}
+        ListEmptyComponent={() => (
+          <Text style={styles.empty}>Nenhum produto encontrado</Text>
+        )}
+        renderItem={({item}) => (
           <View style={styles.background}>
             <TouchableOpacity style={styles.touchContainer} onPress={() => navigation.navigate('MoreInfo', {item})}>  
                 <Image source={{uri: item.image}} style={styles.img}></Image>
@@ -64,12 +68,12 @@ export default function Home(){
 }
 
 const styles = StyleSheet.create({
-    container: {
+  container: {
       flex: 1,
       backgroundColor: '#eddaba',
       paddingHorizontal: 20,
     },
-    searchContainer: {
+  searchContainer: {
       flexDirection: 'row',
       backgroundColor: '#fff',
       borderRadius: 20,
@@ -77,28 +81,28 @@ const styles = StyleSheet.create({
       height: 40,
       paddingHorizontal: 10,
     },
-    input: {
+  input: {
       flex: 1,
       fontSize: 16,
     },
-    icon: {
+  icon: {
       width: 20,
       height: 20,
       marginTop: 10
     },
-    cardsContainer: {
+  cardsContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       flexWrap: 'wrap'
     },
-    background: {
+  background: {
       width: '45%',
       height: 200,
       backgroundColor: '#b99470',
       borderRadius: 15,
       marginBottom: 20,
     },
-    img: {
+  img: {
       width: '65%',
       height: '65%',
       aspectRatio: 1,
@@ -106,18 +110,23 @@ const styles = StyleSheet.create({
       marginTop: 10,
       borderRadius: 8,
     },
-    touchContainer: {
+  touchContainer: {
       flex: 1,
       alignItems: 'center',
     },
-    name: {
+  name: {
       fontSize: 14,
       textAlign: 'center',
       paddingVertical: 3,
     },
-    price: {
+  price: {
       textAlign: 'center',
       fontSize: 16,
       fontWeight: 'bold'
     },
+  empty: {
+    textAlign: 'center',
+    fontSize: 20,
+    color: '#603d1a'
+  }
 })

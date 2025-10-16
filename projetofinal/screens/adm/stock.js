@@ -6,7 +6,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { DataContext } from '../../components/dataContext';
 
 export default function Stock() {
-  const { products, loading } = useContext(DataContext);
+  const { products } = useContext(DataContext);
   const [quantities, setQuantities] = useState({});
 
   useEffect(() => {
@@ -43,14 +43,6 @@ export default function Stock() {
       setQuantities(prev => ({ ...prev, [productId]: num }));
     }
   };
-
-  if (loading) {
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#eddaba', justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#6a7e4e" />
-      </SafeAreaView>
-    );
-  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#eddaba' }}>

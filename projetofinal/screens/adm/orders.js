@@ -19,7 +19,6 @@ export default function Orders() {
 
   const accept = async (item) => {
     try {
-      // Atualiza situação do pedido
       await updateDoc(doc(db, "purchases", item.id), { situation: "Confirmado" });
 
       if (item.items && item.items.length > 0) {
@@ -28,15 +27,12 @@ export default function Orders() {
           const productSnap = await getDoc(productRef);
 
           if (productSnap.exists()) {
-            // Pega a quantidade atual (use 'quantity' se esse é o campo que seu estoque usa)
             const currentQuantity = productSnap.data().quantity || 0;
 
-            // Calcula nova quantidade
             const newQuantity = Math.max(currentQuantity - product.quantity, 0);
 
             console.log(`Produto: ${product.name}, atual: ${currentQuantity}, vendido: ${product.quantity}, novo: ${newQuantity}`);
 
-            // Atualiza no Firestore
             await updateDoc(productRef, { quantity: newQuantity });
           } else {
             console.log(`Produto ${product.name} não encontrado no estoque`);
@@ -44,7 +40,6 @@ export default function Orders() {
         }
       }
 
-      // Atualiza o estado local para refletir a mudança na interface
       setPurchases(prev =>
         prev.map(p => p.id === item.id ? { ...p, situation: "Confirmado" } : p)
       );
@@ -63,6 +58,15 @@ export default function Orders() {
       console.log("Erro ao negar pedido:", error);
     }
   };
+
+  const confirm = async (item) => {
+    try {
+      await updateDoc(doc(db, "purchases", item.id), { situation: "Entregue" });
+      setPurchases(prev => prev.map(p => p.id === item.id ? { ...p, situation: "Entregue" } : p));
+    } catch (error) {
+      console.log("Erro ao confirmar entrega do pedido:", error);
+    }
+  }
 
   return (
     <SafeAreaProvider>
@@ -145,6 +149,13 @@ export default function Orders() {
                       </TouchableOpacity>
                     </View>
                   )}
+                  {item.situation === 'Confirmado' && (
+                    <View style={styles.checkContainer}>
+                      <TouchableOpacity onPress={() => confirm(item)} style={styles.confirm}>
+                        <Text style={{color: 'white'}}>Pedido entregue</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
                 </View>
               )}
             />
@@ -170,12 +181,33 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 10,
   },
-  topinfo: { flexDirection: 'row', justifyContent: 'space-between' },
-  data: { fontSize: 15 },
-  client: { fontSize: 15, fontWeight: '500', color: '#2f2f2f' },
-  productRow: { flexDirection: 'row', marginVertical: 5 },
-  image: { height: 85, width: 85, borderRadius: 8, marginRight: 10 },
-  name: { color: '#3b3b1a', fontSize: 19, fontWeight: 'bold' },
+  topinfo: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between' 
+  },
+  data: { 
+    fontSize: 15 
+  },
+  client: { 
+    fontSize: 15, 
+    fontWeight: '500', 
+    color: '#2f2f2f' 
+  },
+  productRow: { 
+    flexDirection: 'row', 
+    marginVertical: 5 
+  },
+  image: { 
+    height: 85, 
+    width: 85, 
+    borderRadius: 8, 
+    marginRight: 10 
+  },
+  name: { 
+    color: '#3b3b1a',
+    fontSize: 19, 
+    fontWeight: 'bold' 
+  },
   total: {
     marginTop: 5,
     fontSize: 16,
@@ -185,7 +217,7 @@ const styles = StyleSheet.create({
   checkContainer: {
     alignSelf: 'center',
     flexDirection: 'row',
-    gap: 10,
+    gap: 30,
     marginTop: 10,
   },
   empty: {
@@ -193,4 +225,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#603d1a',
   },
+  confirm:{
+    backgroundColor: '#6a7e4e',
+    padding: 10,
+    borderRadius: 5,
+  }
 });

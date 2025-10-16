@@ -14,11 +14,11 @@ export default function SignIn({navigation}){
         createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
             navigation.navigate('TabsClient', {screen: 'Home'});
         })
-            .catch((error) => {
-                console.log('erro', error.message);
-                const msg = errorFirebase(error.code);
-                setError(msg);
-            });
+        .catch((error) => {
+            console.log('erro', error.message);
+            const msg = errorFirebase(error.code);
+            setError(msg);
+        });
     }
 
     return(

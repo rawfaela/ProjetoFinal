@@ -39,20 +39,27 @@ export default function MoreInfo() {
                 })}
               </Text>
               <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.stock}>Em estoque: {item.quantity}</Text>
+              {item.quantity === 0 ? (
+                <Text style={[styles.stock, { color: '#c0392b' }]}>Produto Indisponível</Text>
+              ) : <Text style={styles.stock}>Em estoque: {item.quantity}</Text>
+              }
+              
               <Text style={styles.description}>{item.description}</Text>
             </ScrollView>
           </View>
           
-          <View style={[styles.addButtonContainer, { paddingBottom: insets.bottom }]}>
-            <TouchableOpacity 
-              style={styles.addButton}
-              onPress={handleAddToCart}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.addButtonText}>Adicionar ao Carrinho</Text>
-            </TouchableOpacity>
-          </View>
+          {item.quantity > 0 && (
+            <View style={[styles.addButtonContainer, { paddingBottom: insets.bottom }]}>
+              <TouchableOpacity 
+                style={styles.addButton}
+                onPress={handleAddToCart}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.addButtonText}>Adicionar ao Carrinho</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
