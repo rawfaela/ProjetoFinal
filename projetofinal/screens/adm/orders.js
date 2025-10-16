@@ -1,8 +1,7 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { onAuthStateChanged } from "firebase/auth";
-import { db, auth } from "../../components/controller";
+import { db } from "../../components/controller";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { useContext, useState, useEffect } from 'react';
 import { DataContext } from '../../components/dataContext';
@@ -13,13 +12,13 @@ export default function Orders() {
   const { orders, loading } = useContext(DataContext);
   const [purchases, setPurchases] = useState([]);
 
-  useEffect(() => {
+  useEffect(() => {                //!
     setPurchases(orders); 
   }, [orders]);
 
   const accept = async (item) => {
     try {
-      await updateDoc(doc(db, "purchases", item.id), { situation: "Confirmado" });
+      await updateDoc(doc(db, "purchases", item.id), { situation: "Confirmado" }); 
 
       if (item.items && item.items.length > 0) {
         for (const product of item.items) {
@@ -27,11 +26,7 @@ export default function Orders() {
           const productSnap = await getDoc(productRef);
 
           if (productSnap.exists()) {
-            const currentQuantity = productSnap.data().quantity || 0;
-
-            const newQuantity = Math.max(currentQuantity - product.quantity, 0);
-
-            console.log(`Produto: ${product.name}, atual: ${currentQuantity}, vendido: ${product.quantity}, novo: ${newQuantity}`);
+            const newQuantity = Math.max(productSnap.data().quantity - product.quantity, 0);
 
             await updateDoc(productRef, { quantity: newQuantity });
           } else {
@@ -70,7 +65,7 @@ export default function Orders() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#eddaba' }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#eddaba' }}>  
         <View style={styles.container}>
           <Text style={styles.title}>PEDIDOS</Text>
 
