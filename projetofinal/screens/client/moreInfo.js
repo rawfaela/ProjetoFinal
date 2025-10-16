@@ -53,7 +53,6 @@ export default function MoreInfo() {
               <TouchableOpacity 
                 style={styles.addButton}
                 onPress={handleAddToCart}
-                activeOpacity={0.8}
               >
                 <Text style={styles.addButtonText}>Adicionar ao Carrinho</Text>
               </TouchableOpacity>

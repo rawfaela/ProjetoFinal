@@ -6,13 +6,11 @@ import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { useContext, useState, useEffect } from 'react';
 import { DataContext } from '../../components/dataContext';
 
-//! ver parte de aceitação e mudança em tempo real do estado do pedido (2 cllr diff)
-
 export default function Orders() {
   const { orders, loading } = useContext(DataContext);
   const [purchases, setPurchases] = useState([]);
 
-  useEffect(() => {                //!
+  useEffect(() => {
     setPurchases(orders); 
   }, [orders]);
 
@@ -157,7 +155,9 @@ export default function Orders() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: { 
+    flex: 1 
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',

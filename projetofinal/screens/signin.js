@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
         padding: 8,
         borderRadius: 30,
         color: 'white',
-        marginBottom: 20,
         fontWeight: 600,
     },
     input:{
