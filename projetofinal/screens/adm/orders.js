@@ -34,11 +34,6 @@ export default function Orders() {
           }
         }
       }
-
-      setPurchases(prev =>
-        prev.map(p => p.id === item.id ? { ...p, situation: "Confirmado" } : p)
-      );
-
     } catch (error) {
       console.log("Erro ao aceitar pedido:", error);
     }

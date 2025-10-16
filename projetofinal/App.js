@@ -11,7 +11,6 @@ import Orders from './screens/adm/orders';
 import MoreInfo from './screens/client/moreInfo';
 import AddressStack from './screens/client/address';
 import FinishPurchase from './screens/client/finishPurchase';
-import OrderInfo from './screens/orderInfo';
 import { DataProvider } from './components/dataContext';
 import { CartProvider } from './components/cartProvider';
 import { NotificationProvider } from './components/notif';
@@ -62,8 +61,6 @@ export default function App() {
 
               <Stack.Screen name='AddressStack' component={AddressStack} options={{headerShown: false}}/>
               
-              <Stack.Screen name='OrderInfo' component={OrderInfo} options={{headerShown: false}}/> 
-
             </Stack.Navigator>
           </NavigationContainer>
         </NotificationProvider>
