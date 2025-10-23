@@ -27,8 +27,6 @@ export default function Orders() {
             const newQuantity = Math.max(productSnap.data().quantity - product.quantity, 0);
 
             await updateDoc(productRef, { quantity: newQuantity });
-          } else {
-            console.log(`Produto ${product.name} não encontrado no estoque`);
           }
         }
       }

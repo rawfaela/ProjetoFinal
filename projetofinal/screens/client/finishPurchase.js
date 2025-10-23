@@ -65,7 +65,6 @@ export default function FinishPurchase({navigation, route}) {
       navigation.navigate('TabsClient',{screen:'Home'});
     } catch (error) {
       showNotif('Erro ao registrar compra. Tente novamente.', 'error');
-      console.error(error);
     }
   };
 

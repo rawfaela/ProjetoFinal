@@ -36,7 +36,6 @@ export default function AddProducts(){
                 quantity: parseInt(quantity),
                 image: image.trim(),
             });
-            console.log("produto add com sucesso");
             showNotif("Produto adicionado com sucesso!", "success");
 
             setName('');
@@ -45,7 +44,6 @@ export default function AddProducts(){
             setQuantity('');
             setImage('');
         } catch (error) {
-            console.error("Erro ao adicionar produto: ", error);
             showNotif("Erro ao adicionar produto!", "error");
         } finally {
             setUploading(false);

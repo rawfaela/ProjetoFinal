@@ -1,8 +1,7 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { onAuthStateChanged } from "firebase/auth";
-import { db, auth } from "../../components/controller";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { auth } from "../../components/controller";
 import { useContext, useState, useEffect } from 'react';
 import { DataContext } from '../../components/dataContext';
 
