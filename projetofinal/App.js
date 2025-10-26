@@ -11,6 +11,7 @@ import Orders from './screens/adm/orders';
 import MoreInfo from './screens/client/moreInfo';
 import AddressStack from './screens/client/address';
 import FinishPurchase from './screens/client/finishPurchase';
+import ManageProducts from './screens/adm/manageProducts';
 import { DataProvider } from './components/dataContext';
 import { CartProvider } from './components/cartProvider';
 import { NotificationProvider } from './components/notif';
@@ -60,6 +61,8 @@ export default function App() {
               <Stack.Screen name='FinishPurchase'component={FinishPurchase} options={{headerShown: false}}/>
 
               <Stack.Screen name='AddressStack' component={AddressStack} options={{headerShown: false}}/>
+
+              <Stack.Screen name='ManageProducts' component={ManageProducts} options={{headerShown: false}}/>
               
             </Stack.Navigator>
           </NavigationContainer>

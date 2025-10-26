@@ -5,7 +5,7 @@ import { db } from '../../components/controller';
 import { collection, addDoc } from 'firebase/firestore';
 import { useNotification } from '../../components/notif';
 
-export default function AddProducts(){
+export default function AddProducts({navigation}){
     const [name, setName] = useState('');
     const [desc, setDesc] = useState('');
     const [price, setPrice] = useState('');
@@ -108,6 +108,10 @@ export default function AddProducts(){
                         <Text style={styles.buttonText}>
                             {uploading ? 'Enviando...' : 'Adicionar Produto'}
                         </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.button, {backgroundColor: '#a17951ff'}]} onPress={() => {navigation.navigate('ManageProducts')}}>
+                        <Text style={styles.buttonText}>Alterar/Excluir Produto</Text>
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>

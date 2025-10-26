@@ -1,8 +1,6 @@
 import { Text, View, StyleSheet, TextInput, Image, TouchableOpacity, Platform, StatusBar, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
-import { db } from '../../components/controller';
-import { collection, getDocs } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from 'react';
 import { DataContext } from '../../components/dataContext';
@@ -16,22 +14,6 @@ export default function Home(){
   useEffect(() => {
     setProducts(products);
   }, [products]);
-
-  useEffect(() => {
-    async function loadProducts() {
-      try {
-        const querySnapshot = await getDocs(collection(db, 'products'));
-        const array = [];
-        querySnapshot.forEach((doc) => {
-          array.push({id: doc.id, ...doc.data() });
-        });
-        setProducts(array);
-      } catch (error){
-        console.log("erro ao carregar produtos: ", error);
-      }
-    }
-    loadProducts();
-  }, []);
 
   return(
     <SafeAreaView style={{flex: 1, backgroundColor: '#eddaba'}} edges={['top', 'left', 'right']}>

@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, FlatList, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, FlatList, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { db } from '../../components/controller';
 import { doc, updateDoc } from "firebase/firestore";
@@ -46,7 +46,7 @@ export default function Stock() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#eddaba' }}>
-      <View style={styles.container}>
+      <View style={{ paddingBottom: 10 }}>
         <Text style={styles.title}>ESTOQUE</Text>
 
         {products.length === 0 ? (
@@ -60,7 +60,7 @@ export default function Stock() {
                 <Image source={{ uri: item.image }} style={styles.image} />
                 <View style={styles.productInfo}>
                   <Text style={styles.name}>{item.name}</Text>
-                  <Text style={styles.price}>R${item.price?.toFixed(2)}</Text>
+                  <Text style={styles.price}>R${Number(item.price).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
                 </View>
                 <View style={styles.counterContainer}>
                   <TouchableOpacity style={[styles.button, { borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }]}onPress={() => decrease(item.id)}>
