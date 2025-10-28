@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { db, auth } from './controller';
 import { doc, setDoc, getDoc } from "firebase/firestore";
+import { Alert } from "react-native";
 
 const CartContext = createContext();
 
@@ -93,8 +94,24 @@ export function CartProvider({ children }) {
   }
 
   function remove(item){
-    const updatedCart = cart.filter((p) => p.id !== item.id);
-    setCart(updatedCart);
+    Alert.alert(
+      "Remover Produto",
+      "Tem certeza que deseja remover este produto do carrinho?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel"
+        },
+        { 
+          text: "Remover", 
+          style: "destructive",
+          onPress: () => {
+            const updatedCart = cart.filter((p) => p.id !== item.id);
+            setCart(updatedCart);
+          } 
+        }
+      ]
+    );
   }
 
   return (

@@ -120,6 +120,34 @@ function EditAddress({ route, navigation }) {
   const [cep, setCep] = useState(address?.cep || "");
   const [neighborhood, setNeighborhood] = useState(address?.neighborhood || "");
 
+  const fetchAddressByCep = async (cepValue) => {
+    const cleanedCep = cepValue.replace(/\D/g, ''); 
+
+    if (cleanedCep.length !== 8) return; 
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cleanedCep}/json/`);
+      const data = await response.json();
+
+      if (data.erro) {
+        showNotif('CEP não encontrado!', 'error');
+        return;
+      }
+      setStreet(data.logradouro || '');
+      setNeighborhood(data.bairro || '');
+      setCity(data.localidade || '');
+      setState(data.uf || '');
+    } catch (error) {
+      showNotif('Erro ao buscar CEP. Verifique a conexão.', 'error');
+      console.error(error);
+    }
+  };
+
+  const handleCepChange = (text) => {
+    const formattedCep = formatCep(text);
+    setCep(formattedCep);
+    fetchAddressByCep(formattedCep);
+  };
+
   const formatPhone = (text) => {
     const cleaned = text.replace(/\D/g, "");
 
@@ -213,7 +241,7 @@ function EditAddress({ route, navigation }) {
 
           <TextInput 
             value={cep} 
-            onChangeText={(text) => setCep(formatCep(text))} 
+            onChangeText={handleCepChange} 
             style={styles.input} 
             placeholder="CEP" 
             keyboardType="number-pad" 

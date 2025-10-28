@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   counterContainer:{
     flexDirection:'row',
     alignItems:'center',
-    gap: 10,
+    gap: 5,
     marginRight: 5
   },
   button:{
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   counterText:{
     fontSize:18,
     fontWeight:'bold',
-    color:'#fff'
+    color:'#fff',
   },
   empty: {
     textAlign: 'center',

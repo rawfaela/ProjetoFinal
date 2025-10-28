@@ -152,30 +152,6 @@ export default function FinishPurchase({navigation, route}) {
             </TouchableOpacity>
           )}
 
-          <View style={{flex:1}}>
-            <FlatList
-              data={cart}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({item}) => (
-                <View style={styles.productcontainer}>
-                  <Image
-                    source={{uri: item.image}}
-                    style={styles.image}
-                    resizeMode="cover"
-                  />
-                  <View style={{flex:1}}>
-                    <Text style={styles.prodname}>{item.name}</Text>
-                    <Text style={styles.prodprice}>
-                      R${Number(item.price * item.quantity).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </Text>
-                  </View>
-                  <View style={styles.quantityContainer}>
-                    <Text style={styles.prodqtt}>Qtd: {item.quantity}</Text>
-                  </View>
-                </View>
-              )}
-            />
-          </View>
           <View style={styles.method}>
               <View style={styles.methodtextview}>
                 <Text style={styles.methodtext}>Método de entrega</Text>
@@ -203,6 +179,32 @@ export default function FinishPurchase({navigation, route}) {
                 ))}
               </View>
           </View>
+
+          <View style={{flex:1, marginBottom: 50}}>
+            <FlatList
+              data={cart}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({item}) => (
+                <View style={styles.productcontainer}>
+                  <Image
+                    source={{uri: item.image}}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                  <View style={{flex:1}}>
+                    <Text style={styles.prodname}>{item.name}</Text>
+                    <Text style={styles.prodprice}>
+                      R${Number(item.price * item.quantity).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </Text>
+                  </View>
+                  <View style={styles.quantityContainer}>
+                    <Text style={styles.prodqtt}>Qtd: {item.quantity}</Text>
+                  </View>
+                </View>
+              )}
+            />
+          </View>
+          
         </ScrollView>
         <View style={styles.bottomBar}>
           <View style={styles.total}>
