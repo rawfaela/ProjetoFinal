@@ -53,7 +53,7 @@ export default function LogIn({navigation}){
                 <Text style={styles.error}>{error}</Text>
                 <View style={{rowGap: 20}}>
                     <TouchableOpacity style={styles.button} onPress={VerifyUser}><Text style={styles.buttontext}>Entrar</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignIn')}><Text  style={styles.buttontext}>Criar conta</Text></TouchableOpacity>
+                    <TouchableOpacity style={[styles.button, {backgroundColor: '#b99470'}]} onPress={() => navigation.navigate('SignIn')}><Text  style={styles.buttontext}>Criar conta</Text></TouchableOpacity>
                 </View>
             </View>
         </SafeAreaView>

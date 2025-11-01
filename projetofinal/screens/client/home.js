@@ -35,7 +35,7 @@ export default function Home(){
         )}
         renderItem={({item}) => (
           <View style={styles.background}>
-            <TouchableOpacity style={styles.touchContainer} onPress={() => navigation.navigate('MoreInfo', {item})}>  
+            <TouchableOpacity style={styles.touchContainer} onPress={() => navigation.navigate('MoreInfo', { id: item.id })}>  
                 <Image source={{uri: item.image}} style={styles.img}></Image>
                 <View>
                   <Text style={styles.name}>{item.name}</Text>
@@ -79,14 +79,14 @@ const styles = StyleSheet.create({
     },
   background: {
       width: '45%',
-      height: 220,
+      height: 230,
       backgroundColor: '#b99470',
       borderRadius: 15,
       marginBottom: 20,
     },
   img: {
-      width: '65%',
-      height: '65%',
+      width: '63%',
+      height: '63%',
       aspectRatio: 1,
       alignSelf: 'center',
       marginTop: 10,

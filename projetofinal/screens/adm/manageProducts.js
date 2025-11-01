@@ -153,10 +153,10 @@ export default function ManageProducts() {
                   <TextInput
                     style={styles.input}
                     placeholder="Preço"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={editData.price}
                     onChangeText={(text) =>
-                      setEditData((prev) => ({ ...prev, price: text }))
+                      setEditData((prev) => ({ ...prev, price: text.replace(',', '.') }))
                     }
                   />
                   <TextInput

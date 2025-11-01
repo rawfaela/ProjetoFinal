@@ -3,13 +3,31 @@ import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-
 import { useRoute } from "@react-navigation/native";
 import { useCart } from '../../components/cartProvider';
 import { useNotification } from '../../components/notif';
+import { DataContext } from '../../components/dataContext';
+import { useContext, useEffect, useState } from 'react';
 
 export default function MoreInfo() {
   const route = useRoute();
-  const { item } = route.params;
-  const insets = useSafeAreaInsets();
+  const { id } = route.params;
+  const { products } = useContext(DataContext);
+  const [item, setItem] = useState(null);  const insets = useSafeAreaInsets();
   const { addToCart } = useCart();
   const { showNotif } = useNotification();
+
+  useEffect(() => {
+    const found = products.find(p => p.id === id);
+    setItem(found);
+  }, [products]);
+
+  if (!item) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <Text style={{ textAlign: 'center', marginTop: 40, fontSize: 20 }}>
+          Carregando...
+        </Text>
+      </SafeAreaView>
+    );
+  }
 
   const handleAddToCart = () => {
     const wasAdded = addToCart(item);

@@ -8,6 +8,9 @@ import { collection, doc, getDoc, setDoc, addDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../../components/controller";
 import { useCart } from "../../components/cartProvider";
+import { LogBox } from 'react-native';
+
+LogBox.ignoreAllLogs(true);
 
 export default function FinishPurchase({navigation, route}) {
   const { showNotif } = useNotification();
