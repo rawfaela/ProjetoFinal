@@ -26,11 +26,11 @@ Desenvolver um aplicativo de e-commerce para uma loja de produtos naturais.
 - Cadastro e login;  
 - Pesquisa de produtos;  
 - Adição ao carrinho;  
-- Compra;  
+- Realização da compra;  
 - Visualização do histórico de compras.  
 
 #### Administrador
-- Adição de produtos;  
+- Adição e edição de produtos;  
 - Gerenciamento de estoque;  
 - Confirmação e cancelamento de pedidos.  
 
